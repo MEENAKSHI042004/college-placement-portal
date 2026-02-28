@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+{% block title %}Browse Jobs{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h2 class="fw-bold">Browse Open Jobs</h2>
+  <span class="badge bg-primary fs-6">{{ jobs|length }} Job(s)</span>
+</div>
+<div class="card border-0 shadow-sm mb-4">
+  <div class="card-body">
+    <form method="get" class="row g-3 align-items-end">
+      <div class="col-md-3">
+        <select name="job_type" class="form-select">
+          <option value="">All Types</option>
+          {% for val, label in type_choices %}
+            <option value="{{ val }}" {% if request.GET.job_type == val %}selected{% endif %}>{{ label }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col-md-3">
+        <select name="eligible" class="form-select">
+          <option value="">All Jobs</option>
+          <option value="1" {% if request.GET.eligible %}selected{% endif %}>Eligible Only</option>
+        </select>
+      </div>
+      <div class="col-md-2">
+        <button type="submit" class="btn btn-outline-primary w-100">Filter</button>
+      </div>
+      <div class="col-md-2">
+        <a href="{% url 'companies:browse_jobs' %}" class="btn btn-outline-secondary w-100">Clear</a>
+      </div>
+    </form>
+  </div>
+</div>
+<div class="row g-4">
+  {% for job in jobs %}
+  <div class="col-md-6">
+    <div class="card border-0 shadow-sm h-100">
+      <div class="card-body">
+        <div class="d-flex justify-content-between align-items-start mb-2">
+          <div>
+            <h5 class="fw-bold mb-0">{{ job.title }}</h5>
+            <p class="text-primary mb-0 fw-semibold">{{ job.company.name }}</p>
+          </div>
+          <span class="badge bg-info text-dark">{{ job.get_job_type_display }}</span>
+        </div>
+        <p class="text-muted small mb-2">📍 {{ job.location|default:"TBD" }}</p>
+        <div class="row g-2 mb-3">
+          <div class="col-6"><small class="text-muted">💰 CTC</small><p class="fw-semibold mb-0">{{ job.ctc_display }}</p></div>
+          <div class="col-6"><small class="text-muted">📅 Deadline</small><p class="fw-semibold mb-0">{{ job.application_deadline }}</p></div>
+          <div class="col-6"><small class="text-muted">Min CGPA</small><p class="fw-semibold mb-0">{{ job.min_cgpa }}</p></div>
+          <div class="col-6"><small class="text-muted">Max Backlogs</small><p class="fw-semibold mb-0">{{ job.max_backlogs }}</p></div>
+        </div>
+        {% if profile %}
+          {% if profile.cgpa >= job.min_cgpa and profile.backlogs <= job.max_backlogs %}
+            <span class="badge bg-success">✅ Eligible</span>
+          {% else %}
+            <span class="badge bg-danger">❌ Not Eligible</span>
+          {% endif %}
+        {% endif %}
+      </div>
+      <div class="card-footer bg-transparent border-0">
+        <a href="{% url 'companies:job_detail' job.pk %}" class="btn btn-outline-primary btn-sm w-100">
+          View Details & Apply
+        </a>
+      </div>
+    </div>
+  </div>
+  {% empty %}
+  <div class="col-12 text-center text-muted py-5">
+    <h5>No open jobs available right now.</h5>
+  </div>
+  {% endfor %}
+</div>
+{% endblock %}

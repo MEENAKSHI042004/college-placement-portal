@@ -1,0 +1,45 @@
+ {% extends 'base.html' %}
+{% block title %}Add Student{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-md-8">
+    <div class="card border-0 shadow-sm">
+      <div class="card-body p-4">
+        <h4 class="fw-bold mb-4">Add New Student</h4>
+        <form method="post" enctype="multipart/form-data">
+          {% csrf_token %}
+          <h6 class="text-muted mb-3">Account Details</h6>
+          <div class="row g-3 mb-4">
+            <div class="col-md-6">
+              <label class="form-label">Full Name</label>
+              <input type="text" name="full_name" class="form-control" required>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Email</label>
+              <input type="email" name="email" class="form-control" required>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Password</label>
+              <input type="password" name="password" class="form-control" required>
+            </div>
+          </div>
+          <h6 class="text-muted mb-3">Profile Details</h6>
+          <div class="row g-3">
+            <div class="col-md-6"><label class="form-label">Roll Number</label>{{ form.roll_number }}</div>
+            <div class="col-md-6"><label class="form-label">Branch</label>{{ form.branch }}</div>
+            <div class="col-md-6"><label class="form-label">Year</label>{{ form.year }}</div>
+            <div class="col-md-6"><label class="form-label">Section</label>{{ form.section }}</div>
+            <div class="col-md-6"><label class="form-label">CGPA</label>{{ form.cgpa }}</div>
+            <div class="col-md-6"><label class="form-label">Backlogs</label>{{ form.backlogs }}</div>
+            <div class="col-md-6"><label class="form-label">Phone</label>{{ form.phone }}</div>
+          </div>
+          <div class="mt-4">
+            <button type="submit" class="btn btn-primary">Create Student</button>
+            <a href="{% url 'students:student_list' %}" class="btn btn-outline-secondary ms-2">Cancel</a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

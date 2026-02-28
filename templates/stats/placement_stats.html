@@ -1,0 +1,255 @@
+{% extends 'base.html' %}
+{% block title %}Placement Statistics{% endblock %}
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h2 class="fw-bold">📊 Placement Statistics</h2>
+  <div class="d-flex gap-2">
+    <a href="{% url 'reports:reports_home' %}"
+       class="btn btn-success">📥 Export Reports</a>
+    <a href="{% url 'accounts:admin_dashboard' %}"
+       class="btn btn-outline-secondary">← Dashboard</a>
+  </div>
+</div>
+
+<!-- ── Overview Cards ───────────────────────────── -->
+<div class="row g-3 mb-5">
+  <div class="col-md-2">
+    <div class="card border-0 shadow-sm text-center p-3 bg-primary text-white">
+      <h3 class="fw-bold mb-0">{{ total_students }}</h3>
+      <small>Total Students</small>
+    </div>
+  </div>
+  <div class="col-md-2">
+    <div class="card border-0 shadow-sm text-center p-3 bg-success text-white">
+      <h3 class="fw-bold mb-0">{{ total_placed }}</h3>
+      <small>Placed</small>
+    </div>
+  </div>
+  <div class="col-md-2">
+    <div class="card border-0 shadow-sm text-center p-3 bg-danger text-white">
+      <h3 class="fw-bold mb-0">{{ total_unplaced }}</h3>
+      <small>Not Placed</small>
+    </div>
+  </div>
+  <div class="col-md-2">
+    <div class="card border-0 shadow-sm text-center p-3 bg-info text-white">
+      <h3 class="fw-bold mb-0">{{ placement_pct }}%</h3>
+      <small>Placement %</small>
+    </div>
+  </div>
+  <div class="col-md-2">
+    <div class="card border-0 shadow-sm text-center p-3 bg-warning text-white">
+      <h3 class="fw-bold mb-0">{{ total_companies }}</h3>
+      <small>Companies</small>
+    </div>
+  </div>
+  <div class="col-md-2">
+    <div class="card border-0 shadow-sm text-center p-3 bg-secondary text-white">
+      <h3 class="fw-bold mb-0">{{ total_apps }}</h3>
+      <small>Applications</small>
+    </div>
+  </div>
+</div>
+
+<!-- ── Branch-wise Stats ─────────────────────────── -->
+<div class="card border-0 shadow-sm mb-5">
+  <div class="card-body">
+    <h5 class="fw-bold mb-4">📚 Branch-wise Placement</h5>
+    <div class="table-responsive">
+      <table class="table table-hover mb-0">
+        <thead class="table-light">
+          <tr>
+            <th>Branch</th>
+            <th>Total Students</th>
+            <th>Placed</th>
+            <th>Not Placed</th>
+            <th>Placement %</th>
+            <th>Progress</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for row in branch_data %}
+          {% if row.total > 0 %}
+          <tr>
+            <td class="fw-semibold">{{ row.branch }}</td>
+            <td>{{ row.total }}</td>
+            <td class="text-success fw-semibold">{{ row.placed }}</td>
+            <td class="text-danger">
+              {{ row.total|add:"-"|add:row.placed }}
+            </td>
+            <td>
+              <span class="fw-bold
+                {% if row.pct >= 70 %}text-success
+                {% elif row.pct >= 40 %}text-warning
+                {% else %}text-danger{% endif %}">
+                {{ row.pct }}%
+              </span>
+            </td>
+            <td style="width:200px;">
+              <div class="progress" style="height:10px;">
+                <div class="progress-bar
+                  {% if row.pct >= 70 %}bg-success
+                  {% elif row.pct >= 40 %}bg-warning
+                  {% else %}bg-danger{% endif %}"
+                  style="width:{{ row.pct }}%;">
+                </div>
+              </div>
+            </td>
+          </tr>
+          {% endif %}
+          {% empty %}
+          <tr>
+            <td colspan="6" class="text-center text-muted py-3">
+              No data available.
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ── Year-wise Stats ───────────────────────────── -->
+<div class="card border-0 shadow-sm mb-5">
+  <div class="card-body">
+    <h5 class="fw-bold mb-4">🎓 Year-wise Placement</h5>
+    <div class="row g-3">
+      {% for row in year_data %}
+      {% if row.total > 0 %}
+      <div class="col-md-3">
+        <div class="card border shadow-sm text-center p-3">
+          <h5 class="fw-bold text-primary mb-1">{{ row.year }}</h5>
+          <h3 class="fw-bold mb-0">{{ row.pct }}%</h3>
+          <small class="text-muted">Placement Rate</small>
+          <hr class="my-2">
+          <div class="row text-center">
+            <div class="col-4">
+              <p class="fw-bold mb-0 small">{{ row.total }}</p>
+              <small class="text-muted" style="font-size:0.7rem;">Total</small>
+            </div>
+            <div class="col-4">
+              <p class="fw-bold mb-0 small text-success">{{ row.placed }}</p>
+              <small class="text-muted" style="font-size:0.7rem;">Placed</small>
+            </div>
+            <div class="col-4">
+              <p class="fw-bold mb-0 small text-info">{{ row.apps }}</p>
+              <small class="text-muted" style="font-size:0.7rem;">Apps</small>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endif %}
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+<!-- ── Application Status + Top Recruiters ──────── -->
+<div class="row g-4 mb-5">
+
+  <!-- Status Breakdown -->
+  <div class="col-md-5">
+    <div class="card border-0 shadow-sm h-100">
+      <div class="card-body">
+        <h5 class="fw-bold mb-4">📋 Application Status Breakdown</h5>
+        {% for key, count in app_status_data.items %}
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <span class="text-capitalize fw-semibold">{{ key }}</span>
+          <div class="d-flex align-items-center gap-2">
+            <div class="progress" style="width:120px;height:10px;">
+              <div class="progress-bar
+                {% if key == 'selected' %}bg-success
+                {% elif key == 'rejected' %}bg-danger
+                {% elif key == 'shortlisted' %}bg-info
+                {% elif key == 'on_hold' %}bg-warning
+                {% else %}bg-secondary{% endif %}"
+                style="width:{% if total_apps > 0 %}{% widthratio count total_apps 100 %}{% else %}0{% endif %}%;">
+              </div>
+            </div>
+            <span class="fw-bold">{{ count }}</span>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+
+  <!-- Top Recruiters -->
+  <div class="col-md-7">
+    <div class="card border-0 shadow-sm h-100">
+      <div class="card-body">
+        <h5 class="fw-bold mb-4">🏆 Top Recruiters</h5>
+        {% for recruiter in top_recruiters %}
+        <div class="d-flex justify-content-between align-items-center
+                    border-bottom py-2">
+          <div class="d-flex align-items-center gap-3">
+            <div class="bg-primary text-white rounded-circle d-flex
+                        align-items-center justify-content-center fw-bold"
+                 style="width:36px;height:36px;">
+              {{ forloop.counter }}
+            </div>
+            <span class="fw-semibold">
+              {{ recruiter.job__company__name }}
+            </span>
+          </div>
+          <span class="badge bg-success fs-6">
+            {{ recruiter.selected_count }} Selected
+          </span>
+        </div>
+        {% empty %}
+        <p class="text-muted text-center py-3">No selections yet.</p>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ── Company-wise Stats ────────────────────────── -->
+{% if company_data %}
+<div class="card border-0 shadow-sm mb-4">
+  <div class="card-body">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h5 class="fw-bold mb-0">🏢 Company-wise Stats</h5>
+      <a href="{% url 'accounts:company_stats' %}"
+         class="btn btn-sm btn-outline-primary">View Full Report</a>
+    </div>
+    <div class="table-responsive">
+      <table class="table table-hover mb-0">
+        <thead class="table-light">
+          <tr>
+            <th>Company</th>
+            <th>Industry</th>
+            <th>Total Jobs</th>
+            <th>Applications</th>
+            <th>Selected</th>
+            <th>Open Jobs</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for row in company_data %}
+          <tr>
+            <td class="fw-semibold">{{ row.name }}</td>
+            <td>{{ row.industry }}</td>
+            <td>{{ row.jobs }}</td>
+            <td>{{ row.apps }}</td>
+            <td class="text-success fw-bold">{{ row.selected }}</td>
+            <td>
+              {% if row.open_jobs > 0 %}
+                <span class="badge bg-success">{{ row.open_jobs }} Open</span>
+              {% else %}
+                <span class="badge bg-secondary">No Open Jobs</span>
+              {% endif %}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endif %}
+
+{% endblock %}

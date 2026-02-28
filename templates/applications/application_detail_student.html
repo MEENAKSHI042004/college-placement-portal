@@ -1,0 +1,120 @@
+{% extends 'base.html' %}
+{% block title %}Application — {{ application.job.title }}{% endblock %}
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <div>
+    <h2 class="fw-bold mb-0">{{ application.job.title }}</h2>
+    <p class="text-muted mb-0">{{ application.job.company.name }}</p>
+  </div>
+  <a href="{% url 'applications:my_applications' %}"
+     class="btn btn-outline-secondary">← Back</a>
+</div>
+
+<div class="row g-4">
+
+  <!-- Left: Status Card -->
+  <div class="col-md-4">
+    <div class="card border-0 shadow-sm mb-4">
+      <div class="card-body">
+        <h6 class="fw-bold text-muted mb-3">APPLICATION STATUS</h6>
+
+        <div class="mb-3">
+          <small class="text-muted d-block">Current Status</small>
+          {% if application.status == 'selected' %}
+            <span class="badge bg-success fs-6 mt-1">✅ Selected</span>
+          {% elif application.status == 'rejected' %}
+            <span class="badge bg-danger fs-6 mt-1">❌ Rejected</span>
+          {% elif application.status == 'shortlisted' %}
+            <span class="badge bg-info text-dark fs-6 mt-1">⭐ Shortlisted</span>
+          {% elif application.status == 'on_hold' %}
+            <span class="badge bg-warning text-dark fs-6 mt-1">⏸ On Hold</span>
+          {% else %}
+            <span class="badge bg-secondary fs-6 mt-1">📝 Applied</span>
+          {% endif %}
+        </div>
+
+        <div class="mb-3">
+          <small class="text-muted d-block">Current Round</small>
+          <strong>{{ application.get_current_round_display }}</strong>
+        </div>
+
+        <div class="mb-3">
+          <small class="text-muted d-block">Applied On</small>
+          <strong>{{ application.applied_at|date:"d M Y, h:i A" }}</strong>
+        </div>
+
+        <div class="mb-3">
+          <small class="text-muted d-block">Last Updated</small>
+          <strong>{{ application.updated_at|date:"d M Y, h:i A" }}</strong>
+        </div>
+
+        {% if application.remarks %}
+        <hr>
+        <div>
+          <small class="text-muted d-block">Remarks</small>
+          <p class="mb-0">{{ application.remarks }}</p>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Job Info -->
+    <div class="card border-0 shadow-sm">
+      <div class="card-body">
+        <h6 class="fw-bold text-muted mb-3">JOB DETAILS</h6>
+        <p><small class="text-muted">Company</small><br>
+           <strong>{{ application.job.company.name }}</strong></p>
+        <p><small class="text-muted">CTC</small><br>
+           <strong>{{ application.job.ctc_display }}</strong></p>
+        <p><small class="text-muted">Type</small><br>
+           <strong>{{ application.job.get_job_type_display }}</strong></p>
+        <p class="mb-0"><small class="text-muted">Location</small><br>
+           <strong>{{ application.job.location|default:"—" }}</strong></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Right: Timeline -->
+  <div class="col-md-8">
+    <div class="card border-0 shadow-sm">
+      <div class="card-body">
+        <h5 class="fw-bold mb-4">Application Timeline</h5>
+
+        {% for log in application.status_logs.all %}
+        <div class="d-flex mb-4">
+          <div class="me-3 text-center flex-shrink-0">
+            <div class="bg-primary text-white rounded-circle d-flex align-items-center
+                        justify-content-center fw-bold"
+                 style="width:36px;height:36px;font-size:0.85rem;">
+              {{ forloop.counter }}
+            </div>
+            {% if not forloop.last %}
+            <div class="border-start ms-2 mt-1" style="height:30px;"></div>
+            {% endif %}
+          </div>
+          <div class="border rounded p-3 w-100 shadow-sm">
+            <div class="d-flex justify-content-between align-items-start">
+              <strong class="text-capitalize">{{ log.changed_to }}</strong>
+              <small class="text-muted">{{ log.changed_at|date:"d M Y, h:i A" }}</small>
+            </div>
+            {% if log.round_name %}
+              <small class="text-muted">
+                Round: <strong>{{ log.round_name|title }}</strong>
+              </small>
+            {% endif %}
+            {% if log.remarks %}
+              <p class="mb-0 mt-2 small text-muted">{{ log.remarks }}</p>
+            {% endif %}
+          </div>
+        </div>
+        {% empty %}
+        <p class="text-muted">No updates yet.</p>
+        {% endfor %}
+
+      </div>
+    </div>
+  </div>
+
+</div>
+{% endblock %}

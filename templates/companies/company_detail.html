@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+{% block title %}{{ company.name }}{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h2 class="fw-bold">{{ company.name }}</h2>
+  <div class="d-flex gap-2">
+    <a href="{% url 'companies:company_update' company.pk %}" class="btn btn-outline-primary">Edit</a>
+    <a href="{% url 'companies:job_create' %}" class="btn btn-primary">+ Post Job</a>
+  </div>
+</div>
+<div class="row g-4">
+  <div class="col-md-4">
+    <div class="card border-0 shadow-sm text-center p-4">
+      {% if company.logo %}
+        <img src="{{ company.logo.url }}" class="mb-3 mx-auto d-block" width="100" style="object-fit:contain;">
+      {% else %}
+        <div class="bg-primary text-white rounded d-flex align-items-center justify-content-center mb-3 mx-auto fw-bold"
+             style="width:80px;height:80px;font-size:2rem;">
+          {{ company.name|first }}
+        </div>
+      {% endif %}
+      <h5 class="fw-bold">{{ company.name }}</h5>
+      <p class="text-muted">{{ company.get_industry_display }}</p>
+      <p class="text-muted">📍 {{ company.location|default:"—" }}</p>
+      {% if company.website %}
+        <a href="{{ company.website }}" target="_blank" class="btn btn-outline-primary btn-sm">🌐 Website</a>
+      {% endif %}
+      <hr>
+      {% if company.is_active %}
+        <span class="badge bg-success">Active</span>
+      {% else %}
+        <span class="badge bg-secondary">Inactive</span>
+      {% endif %}
+    </div>
+  </div>
+  <div class="col-md-8">
+    <div class="card border-0 shadow-sm mb-4">
+      <div class="card-body">
+        <h5 class="fw-bold mb-3">About</h5>
+        <p class="text-muted">{{ company.description|default:"No description." }}</p>
+      </div>
+    </div>
+    <div class="card border-0 shadow-sm">
+      <div class="card-body">
+        <h5 class="fw-bold mb-3">Job Posts ({{ company.job_posts.count }})</h5>
+        <table class="table table-hover table-sm mb-0">
+          <thead class="table-light">
+            <tr><th>Title</th><th>Type</th><th>CTC</th><th>Deadline</th><th>Status</th><th></th></tr>
+          </thead>
+          <tbody>
+            {% for job in company.job_posts.all %}
+            <tr>
+              <td class="fw-semibold">{{ job.title }}</td>
+              <td>{{ job.get_job_type_display }}</td>
+              <td>{{ job.ctc_display }}</td>
+              <td>{{ job.application_deadline }}</td>
+              <td>
+                {% if job.status == 'open' %}<span class="badge bg-success">Open</span>
+                {% elif job.status == 'closed' %}<span class="badge bg-danger">Closed</span>
+                {% else %}<span class="badge bg-warning text-dark">Upcoming</span>{% endif %}
+              </td>
+              <td><a href="{% url 'companies:job_detail' job.pk %}" class="btn btn-sm btn-outline-primary">View</a></td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="6" class="text-center text-muted py-3">No jobs posted yet.</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

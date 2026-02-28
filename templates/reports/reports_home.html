@@ -1,0 +1,187 @@
+{% extends 'base.html' %}
+{% block title %}Reports & Exports{% endblock %}
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h2 class="fw-bold">📥 Reports & Exports</h2>
+  <a href="{% url 'accounts:admin_dashboard' %}"
+     class="btn btn-outline-secondary">← Dashboard</a>
+</div>
+
+<!-- ── Quick Stats ───────────────────────────── -->
+<div class="row g-3 mb-5">
+  <div class="col-md-3">
+    <div class="card border-0 shadow-sm text-center p-3 bg-primary text-white">
+      <h3 class="fw-bold mb-0">{{ total_students }}</h3>
+      <small>Total Students</small>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="card border-0 shadow-sm text-center p-3 bg-success text-white">
+      <h3 class="fw-bold mb-0">{{ total_placed }}</h3>
+      <small>Placed</small>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="card border-0 shadow-sm text-center p-3 bg-warning text-white">
+      <h3 class="fw-bold mb-0">{{ total_companies }}</h3>
+      <small>Companies</small>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="card border-0 shadow-sm text-center p-3 bg-info text-white">
+      <h3 class="fw-bold mb-0">{{ total_apps }}</h3>
+      <small>Applications</small>
+    </div>
+  </div>
+</div>
+
+<!-- ── Full Report ───────────────────────────── -->
+<div class="card border-0 shadow-sm mb-4"
+     style="border-left: 5px solid #1a56db !important;">
+  <div class="card-body d-flex justify-content-between align-items-center">
+    <div>
+      <h5 class="fw-bold mb-1">📊 Full Placement Report</h5>
+      <p class="text-muted mb-0">
+        4-sheet Excel file: Summary + Placed Students +
+        Branch Summary + Company Summary
+      </p>
+    </div>
+    <a href="{% url 'reports:export_full' %}"
+       class="btn btn-primary px-4">
+      ⬇ Download Full Report
+    </a>
+  </div>
+</div>
+
+<!-- ── Individual Reports ─────────────────────── -->
+<h5 class="fw-bold mb-3 text-muted">Individual Reports</h5>
+
+<div class="row g-4">
+
+  <!-- All Students -->
+  <div class="col-md-4">
+    <div class="card border-0 shadow-sm h-100">
+      <div class="card-body">
+        <div class="d-flex align-items-center mb-3">
+          <div class="bg-primary text-white rounded p-2 me-3 fs-4">👨‍🎓</div>
+          <div>
+            <h6 class="fw-bold mb-0">All Students</h6>
+            <small class="text-muted">Full student list with profile details</small>
+          </div>
+        </div>
+        <p class="text-muted small mb-0">
+          Includes: Roll No, Name, Branch, CGPA,
+          Backlogs, Phone, Placement Status
+        </p>
+      </div>
+      <div class="card-footer bg-transparent border-0">
+        <a href="{% url 'reports:export_students' %}"
+           class="btn btn-outline-primary w-100">
+          ⬇ Download Excel
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Placed Students -->
+  <div class="col-md-4">
+    <div class="card border-0 shadow-sm h-100">
+      <div class="card-body">
+        <div class="d-flex align-items-center mb-3">
+          <div class="bg-success text-white rounded p-2 me-3 fs-4">✅</div>
+          <div>
+            <h6 class="fw-bold mb-0">Placed Students</h6>
+            <small class="text-muted">Only selected students with company details</small>
+          </div>
+        </div>
+        <p class="text-muted small mb-0">
+          Includes: Student Info, Company, Job Title, CTC, Job Type
+        </p>
+      </div>
+      <div class="card-footer bg-transparent border-0">
+        <a href="{% url 'reports:export_placed' %}"
+           class="btn btn-outline-success w-100">
+          ⬇ Download Excel
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- All Applications -->
+  <div class="col-md-4">
+    <div class="card border-0 shadow-sm h-100">
+      <div class="card-body">
+        <div class="d-flex align-items-center mb-3">
+          <div class="bg-info text-white rounded p-2 me-3 fs-4">📋</div>
+          <div>
+            <h6 class="fw-bold mb-0">All Applications</h6>
+            <small class="text-muted">Every application with status & round info</small>
+          </div>
+        </div>
+        <p class="text-muted small mb-0">
+          Includes: Student, Company, Job, Status, Round, Date
+        </p>
+      </div>
+      <div class="card-footer bg-transparent border-0">
+        <a href="{% url 'reports:export_applications' %}"
+           class="btn btn-outline-info w-100">
+          ⬇ Download Excel
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Branch Summary -->
+  <div class="col-md-4">
+    <div class="card border-0 shadow-sm h-100">
+      <div class="card-body">
+        <div class="d-flex align-items-center mb-3">
+          <div class="bg-warning text-white rounded p-2 me-3 fs-4">📚</div>
+          <div>
+            <h6 class="fw-bold mb-0">Branch Summary</h6>
+            <small class="text-muted">Placement % per branch</small>
+          </div>
+        </div>
+        <p class="text-muted small mb-0">
+          Includes: Branch, Total, Placed, Not Placed,
+          Placement %, Applications
+        </p>
+      </div>
+      <div class="card-footer bg-transparent border-0">
+        <a href="{% url 'reports:export_branch_summary' %}"
+           class="btn btn-outline-warning w-100">
+          ⬇ Download Excel
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Company Summary -->
+  <div class="col-md-4">
+    <div class="card border-0 shadow-sm h-100">
+      <div class="card-body">
+        <div class="d-flex align-items-center mb-3">
+          <div class="bg-secondary text-white rounded p-2 me-3 fs-4">🏢</div>
+          <div>
+            <h6 class="fw-bold mb-0">Company Summary</h6>
+            <small class="text-muted">Applications & selections per company</small>
+          </div>
+        </div>
+        <p class="text-muted small mb-0">
+          Includes: Company, Industry, Jobs, Applications,
+          Shortlisted, Selected, Rejected
+        </p>
+      </div>
+      <div class="card-footer bg-transparent border-0">
+        <a href="{% url 'reports:export_company_summary' %}"
+           class="btn btn-outline-secondary w-100">
+          ⬇ Download Excel
+        </a>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+{% block title %}My Applications{% endblock %}
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h2 class="fw-bold">My Applications</h2>
+  <a href="{% url 'companies:browse_jobs' %}" class="btn btn-primary">
+    Browse More Jobs
+  </a>
+</div>
+
+{% if applications %}
+<div class="row g-4">
+  {% for app in applications %}
+  <div class="col-md-6">
+    <div class="card border-0 shadow-sm h-100">
+      <div class="card-body">
+
+        <div class="d-flex justify-content-between align-items-start mb-3">
+          <div>
+            <h5 class="fw-bold mb-0">{{ app.job.title }}</h5>
+            <p class="text-primary fw-semibold mb-0">{{ app.job.company.name }}</p>
+          </div>
+          {% if app.status == 'selected' %}
+            <span class="badge bg-success">✅ Selected</span>
+          {% elif app.status == 'rejected' %}
+            <span class="badge bg-danger">❌ Rejected</span>
+          {% elif app.status == 'shortlisted' %}
+            <span class="badge bg-info text-dark">⭐ Shortlisted</span>
+          {% elif app.status == 'on_hold' %}
+            <span class="badge bg-warning text-dark">⏸ On Hold</span>
+          {% else %}
+            <span class="badge bg-secondary">📝 Applied</span>
+          {% endif %}
+        </div>
+
+        <p class="text-muted small mb-1">
+           Round: <strong>{{ app.get_current_round_display }}</strong>
+        </p>
+        <p class="text-muted small mb-1">
+           CTC: <strong>{{ app.job.ctc_display }}</strong>
+        </p>
+        <p class="text-muted small mb-0">
+           Applied: <strong>{{ app.applied_at|date:"d M Y" }}</strong>
+        </p>
+
+      </div>
+      <div class="card-footer bg-transparent border-0">
+        <a href="{% url 'applications:application_detail_student' app.pk %}"
+           class="btn btn-outline-primary btn-sm w-100">
+          View Details
+        </a>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+
+{% else %}
+<div class="text-center py-5">
+  <h4 class="text-muted">No applications yet.</h4>
+  <p class="text-muted">Browse open jobs and start applying!</p>
+  <a href="{% url 'companies:browse_jobs' %}" class="btn btn-primary mt-2">
+    Browse Jobs
+  </a>
+</div>
+{% endif %}
+
+{% endblock %}

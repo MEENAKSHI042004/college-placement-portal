@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% block title %}{{ title }}{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-md-9">
+    <div class="card border-0 shadow-sm">
+      <div class="card-body p-4">
+        <h4 class="fw-bold mb-4">{{ title }}</h4>
+        <form method="post">
+          {% csrf_token %}
+          <h6 class="text-muted fw-semibold border-bottom pb-2 mb-3">Basic Information</h6>
+          <div class="row g-3 mb-4">
+            <div class="col-md-6"><label class="form-label fw-semibold">Company *</label>{{ form.company }}</div>
+            <div class="col-md-6"><label class="form-label fw-semibold">Job Title *</label>{{ form.title }}</div>
+            <div class="col-md-6"><label class="form-label fw-semibold">Job Type</label>{{ form.job_type }}</div>
+            <div class="col-md-6"><label class="form-label fw-semibold">Location</label>{{ form.location }}</div>
+            <div class="col-12"><label class="form-label fw-semibold">Description *</label>{{ form.description }}</div>
+            <div class="col-12"><label class="form-label fw-semibold">Responsibilities</label>{{ form.responsibilities }}</div>
+            <div class="col-12"><label class="form-label fw-semibold">Requirements</label>{{ form.requirements }}</div>
+          </div>
+          <h6 class="text-muted fw-semibold border-bottom pb-2 mb-3">Package & Eligibility</h6>
+          <div class="row g-3 mb-4">
+            <div class="col-md-3"><label class="form-label fw-semibold">CTC Min (LPA)*</label>{{ form.ctc_min }}</div>
+            <div class="col-md-3"><label class="form-label fw-semibold">CTC Max (LPA)*</label>{{ form.ctc_max }}</div>
+            <div class="col-md-3"><label class="form-label fw-semibold">Min CGPA</label>{{ form.min_cgpa }}</div>
+            <div class="col-md-3"><label class="form-label fw-semibold">Max Backlogs</label>{{ form.max_backlogs }}</div>
+            <div class="col-md-6">
+              <label class="form-label fw-semibold">Eligible Branches</label>
+              <div class="border rounded p-3">{{ form.eligible_branches }}</div>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-semibold">Eligible Years</label>
+              <div class="border rounded p-3">{{ form.eligible_years }}</div>
+            </div>
+          </div>
+          <h6 class="text-muted fw-semibold border-bottom pb-2 mb-3">Dates & Status</h6>
+          <div class="row g-3">
+            <div class="col-md-3"><label class="form-label fw-semibold">Deadline *</label>{{ form.application_deadline }}</div>
+            <div class="col-md-3"><label class="form-label fw-semibold">Drive Date</label>{{ form.drive_date }}</div>
+            <div class="col-md-3"><label class="form-label fw-semibold">Vacancies</label>{{ form.vacancy_count }}</div>
+            <div class="col-md-3"><label class="form-label fw-semibold">Status</label>{{ form.status }}</div>
+          </div>
+          <div class="mt-4 d-flex gap-2">
+            <button type="submit" class="btn btn-primary px-4">Save Job</button>
+            <a href="{% url 'companies:job_list' %}" class="btn btn-outline-secondary">Cancel</a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

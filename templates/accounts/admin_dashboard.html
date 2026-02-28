@@ -1,0 +1,238 @@
+{% extends 'base.html' %}
+{% block title %}Admin Dashboard{% endblock %}
+{% block content %}
+
+<!-- Breadcrumb -->
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item active">
+      <i class="bi bi-speedometer2 me-1"></i> Dashboard
+    </li>
+  </ol>
+</nav>
+
+<!-- Header -->
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <div>
+    <h2 class="fw-bold mb-0">Admin Dashboard</h2>
+    <p class="text-muted mb-0">Welcome back, {{ user.full_name }} 👋</p>
+  </div>
+  <a href="{% url 'accounts:placement_stats' %}" class="btn btn-primary">
+    <i class="bi bi-bar-chart me-1"></i> View Statistics
+  </a>
+</div>
+
+<!-- ── Stat Cards ────────────────────────────── -->
+<div class="row g-4 mb-4">
+
+  <div class="col-md-2">
+    <div class="card border-0 shadow-sm text-center p-3 h-100"
+         style="border-left: 4px solid #1a56db !important;">
+      <i class="bi bi-people fs-3 text-primary mb-1"></i>
+      <h3 class="fw-bold text-primary mb-0">{{ total_students }}</h3>
+      <small class="text-muted">Total Students</small>
+    </div>
+  </div>
+
+  <div class="col-md-2">
+    <div class="card border-0 shadow-sm text-center p-3 h-100"
+         style="border-left: 4px solid #10b981 !important;">
+      <i class="bi bi-patch-check fs-3 text-success mb-1"></i>
+      <h3 class="fw-bold text-success mb-0">{{ total_placed }}</h3>
+      <small class="text-muted">Placed</small>
+    </div>
+  </div>
+
+  <div class="col-md-2">
+    <div class="card border-0 shadow-sm text-center p-3 h-100"
+         style="border-left: 4px solid #06b6d4 !important;">
+      <i class="bi bi-graph-up fs-3 text-info mb-1"></i>
+      <h3 class="fw-bold text-info mb-0">{{ placement_pct }}%</h3>
+      <small class="text-muted">Placement %</small>
+    </div>
+  </div>
+
+  <div class="col-md-2">
+    <div class="card border-0 shadow-sm text-center p-3 h-100"
+         style="border-left: 4px solid #f59e0b !important;">
+      <i class="bi bi-building fs-3 text-warning mb-1"></i>
+      <h3 class="fw-bold text-warning mb-0">{{ total_companies }}</h3>
+      <small class="text-muted">Companies</small>
+    </div>
+  </div>
+
+  <div class="col-md-2">
+    <div class="card border-0 shadow-sm text-center p-3 h-100"
+         style="border-left: 4px solid #ef4444 !important;">
+      <i class="bi bi-briefcase fs-3 text-danger mb-1"></i>
+      <h3 class="fw-bold text-danger mb-0">{{ total_jobs }}</h3>
+      <small class="text-muted">Open Jobs</small>
+    </div>
+  </div>
+
+  <div class="col-md-2">
+    <div class="card border-0 shadow-sm text-center p-3 h-100"
+         style="border-left: 4px solid #6b7280 !important;">
+      <i class="bi bi-file-earmark-text fs-3 text-secondary mb-1"></i>
+      <h3 class="fw-bold text-secondary mb-0">{{ total_apps }}</h3>
+      <small class="text-muted">Applications</small>
+    </div>
+  </div>
+
+</div>
+
+<!-- ── Quick Links ───────────────────────────── -->
+<h6 class="text-muted fw-semibold mb-3 text-uppercase"
+    style="font-size:0.8rem;letter-spacing:1px;">
+  Quick Actions
+</h6>
+<div class="row g-3 mb-4">
+
+  <div class="col-md-2">
+    <a href="{% url 'students:student_list' %}"
+       class="card border-0 shadow-sm text-decoration-none text-dark p-3
+              d-block text-center h-100">
+      <i class="bi bi-people fs-4 text-primary d-block mb-1"></i>
+      <small class="fw-semibold">Students</small>
+    </a>
+  </div>
+
+  <div class="col-md-2">
+    <a href="{% url 'students:create_student' %}"
+       class="card border-0 shadow-sm text-decoration-none text-dark p-3
+              d-block text-center h-100">
+      <i class="bi bi-person-plus fs-4 text-success d-block mb-1"></i>
+      <small class="fw-semibold">Add Student</small>
+    </a>
+  </div>
+
+  <div class="col-md-2">
+    <a href="{% url 'companies:company_list' %}"
+       class="card border-0 shadow-sm text-decoration-none text-dark p-3
+              d-block text-center h-100">
+      <i class="bi bi-building fs-4 text-warning d-block mb-1"></i>
+      <small class="fw-semibold">Companies</small>
+    </a>
+  </div>
+
+  <div class="col-md-2">
+    <a href="{% url 'companies:job_create' %}"
+       class="card border-0 shadow-sm text-decoration-none text-dark p-3
+              d-block text-center h-100">
+      <i class="bi bi-plus-circle fs-4 text-info d-block mb-1"></i>
+      <small class="fw-semibold">Post Job</small>
+    </a>
+  </div>
+
+  <div class="col-md-2">
+    <a href="{% url 'applications:all_applications' %}"
+       class="card border-0 shadow-sm text-decoration-none text-dark p-3
+              d-block text-center h-100">
+      <i class="bi bi-file-earmark-text fs-4 text-danger d-block mb-1"></i>
+      <small class="fw-semibold">Applications</small>
+    </a>
+  </div>
+
+  <div class="col-md-2">
+    <a href="{% url 'reports:reports_home' %}"
+       class="card border-0 shadow-sm text-decoration-none text-dark p-3
+              d-block text-center h-100">
+      <i class="bi bi-download fs-4 text-secondary d-block mb-1"></i>
+      <small class="fw-semibold">Export Reports</small>
+    </a>
+  </div>
+
+</div>
+
+<!-- ── Recent Activity ───────────────────────── -->
+<div class="row g-4">
+
+  <!-- Recent Applications -->
+  <div class="col-md-7">
+    <div class="card border-0 shadow-sm">
+      <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h6 class="fw-bold mb-0">
+            <i class="bi bi-clock-history me-1 text-primary"></i>
+            Recent Applications
+          </h6>
+          <a href="{% url 'applications:all_applications' %}"
+             class="btn btn-sm btn-outline-primary">View All</a>
+        </div>
+        <table class="table table-sm table-hover mb-0">
+          <thead class="table-light">
+            <tr>
+              <th>Student</th>
+              <th>Job</th>
+              <th>Company</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for app in recent_apps %}
+            <tr>
+              <td class="fw-semibold">{{ app.student.user.full_name }}</td>
+              <td>{{ app.job.title }}</td>
+              <td>{{ app.job.company.name }}</td>
+              <td>
+                {% if app.status == 'selected' %}
+                  <span class="badge bg-success">Selected</span>
+                {% elif app.status == 'rejected' %}
+                  <span class="badge bg-danger">Rejected</span>
+                {% elif app.status == 'shortlisted' %}
+                  <span class="badge bg-info text-dark">Shortlisted</span>
+                {% else %}
+                  <span class="badge bg-secondary">Applied</span>
+                {% endif %}
+              </td>
+            </tr>
+            {% empty %}
+            <tr>
+              <td colspan="4" class="text-muted text-center py-3">
+                No applications yet.
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Recent Jobs -->
+  <div class="col-md-5">
+    <div class="card border-0 shadow-sm">
+      <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h6 class="fw-bold mb-0">
+            <i class="bi bi-briefcase me-1 text-warning"></i>
+            Recent Job Posts
+          </h6>
+          <a href="{% url 'companies:job_list' %}"
+             class="btn btn-sm btn-outline-primary">View All</a>
+        </div>
+        {% for job in recent_jobs %}
+        <div class="d-flex justify-content-between align-items-center
+                    border-bottom py-2">
+          <div>
+            <p class="fw-semibold mb-0 small">{{ job.title }}</p>
+            <small class="text-muted">{{ job.company.name }}</small>
+          </div>
+          {% if job.status == 'open' %}
+            <span class="badge bg-success">Open</span>
+          {% elif job.status == 'closed' %}
+            <span class="badge bg-danger">Closed</span>
+          {% else %}
+            <span class="badge bg-warning text-dark">Upcoming</span>
+          {% endif %}
+        </div>
+        {% empty %}
+        <p class="text-muted text-center py-3">No jobs posted yet.</p>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,262 @@
+{% extends 'base.html' %}
+{% block title %}Student Dashboard{% endblock %}
+{% block content %}
+
+<!-- Breadcrumb -->
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item active">
+      <i class="bi bi-house me-1"></i> Dashboard
+    </li>
+  </ol>
+</nav>
+
+<!-- Header -->
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <div>
+    <h2 class="fw-bold mb-0">Welcome, {{ user.full_name }}! 👋</h2>
+    <p class="text-muted mb-0">Here's your placement overview</p>
+  </div>
+  {% if not profile %}
+    <a href="{% url 'students:create_profile' %}"
+       class="btn btn-warning fw-bold">
+      <i class="bi bi-exclamation-triangle me-1"></i>
+      Complete Your Profile
+    </a>
+  {% endif %}
+</div>
+
+{% if profile %}
+
+<!-- ── Stats Row ─────────────────────────────── -->
+<div class="row g-4 mb-4">
+
+  <div class="col-md-3">
+    <div class="card border-0 shadow-sm text-center p-3"
+         style="border-left: 4px solid #1a56db !important;">
+      <i class="bi bi-send fs-3 text-primary mb-1"></i>
+      <h3 class="fw-bold text-primary mb-0">{{ stats.total_applied }}</h3>
+      <small class="text-muted">Total Applied</small>
+    </div>
+  </div>
+
+  <div class="col-md-3">
+    <div class="card border-0 shadow-sm text-center p-3"
+         style="border-left: 4px solid #06b6d4 !important;">
+      <i class="bi bi-star fs-3 text-info mb-1"></i>
+      <h3 class="fw-bold text-info mb-0">{{ stats.shortlisted }}</h3>
+      <small class="text-muted">Shortlisted</small>
+    </div>
+  </div>
+
+  <div class="col-md-3">
+    <div class="card border-0 shadow-sm text-center p-3"
+         style="border-left: 4px solid #10b981 !important;">
+      <i class="bi bi-trophy fs-3 text-success mb-1"></i>
+      <h3 class="fw-bold text-success mb-0">{{ stats.selected }}</h3>
+      <small class="text-muted">Selected</small>
+    </div>
+  </div>
+
+  <div class="col-md-3">
+    <div class="card border-0 shadow-sm text-center p-3"
+         style="border-left: 4px solid #ef4444 !important;">
+      <i class="bi bi-x-circle fs-3 text-danger mb-1"></i>
+      <h3 class="fw-bold text-danger mb-0">{{ stats.rejected }}</h3>
+      <small class="text-muted">Rejected</small>
+    </div>
+  </div>
+
+</div>
+
+<!-- ── Placed Banner ──────────────────────────── -->
+{% if profile.placement_status == 'placed' %}
+<div class="alert alert-success fw-bold text-center mb-4 py-3">
+  <i class="bi bi-trophy-fill me-2 fs-5"></i>
+  Congratulations! You are Successfully Placed! 🎉
+</div>
+{% endif %}
+
+<div class="row g-4">
+
+  <!-- Left: Profile + Quick Links -->
+  <div class="col-md-4">
+
+    <!-- Profile Summary Card -->
+    <div class="card border-0 shadow-sm mb-4">
+      <div class="card-body">
+        <div class="d-flex align-items-center mb-3">
+          <div class="bg-primary text-white rounded-circle d-flex
+                      align-items-center justify-content-center me-3 fw-bold"
+               style="width:48px;height:48px;font-size:1.3rem;">
+            {{ user.full_name|first }}
+          </div>
+          <div>
+            <h6 class="fw-bold mb-0">{{ user.full_name }}</h6>
+            <small class="text-muted">{{ profile.roll_number }}</small>
+          </div>
+        </div>
+        <hr class="my-2">
+        <div class="row g-2 text-center">
+          <div class="col-4">
+            <p class="fw-bold text-primary mb-0">{{ profile.cgpa }}</p>
+            <small class="text-muted" style="font-size:0.75rem;">CGPA</small>
+          </div>
+          <div class="col-4">
+            <p class="fw-bold text-info mb-0">
+              {{ profile.get_branch_display|slice:":3" }}
+            </p>
+            <small class="text-muted" style="font-size:0.75rem;">Branch</small>
+          </div>
+          <div class="col-4">
+            <p class="fw-bold text-warning mb-0">Y{{ profile.year }}</p>
+            <small class="text-muted" style="font-size:0.75rem;">Year</small>
+          </div>
+        </div>
+        <hr class="my-2">
+        <div class="text-center">
+          {% if profile.placement_status == 'placed' %}
+            <span class="badge bg-success">
+              <i class="bi bi-check-circle me-1"></i> Placed
+            </span>
+          {% else %}
+            <span class="badge bg-warning text-dark">
+              <i class="bi bi-clock me-1"></i> Not Placed Yet
+            </span>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick Links -->
+    <div class="card border-0 shadow-sm">
+      <div class="card-body">
+        <h6 class="fw-bold mb-3 text-muted">
+          <i class="bi bi-lightning me-1"></i> Quick Links
+        </h6>
+        <div class="d-grid gap-2">
+          <a href="{% url 'students:my_profile' %}"
+             class="btn btn-outline-primary btn-sm text-start">
+            <i class="bi bi-person-circle me-2"></i> View My Profile
+          </a>
+          <a href="{% url 'students:update_profile' %}"
+             class="btn btn-outline-secondary btn-sm text-start">
+            <i class="bi bi-pencil me-2"></i> Edit Profile
+          </a>
+          <a href="{% url 'companies:browse_jobs' %}"
+             class="btn btn-outline-success btn-sm text-start">
+            <i class="bi bi-briefcase me-2"></i> Browse Jobs
+          </a>
+          <a href="{% url 'applications:my_applications' %}"
+             class="btn btn-outline-info btn-sm text-start">
+            <i class="bi bi-file-earmark-check me-2"></i> My Applications
+          </a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Right: Applications + Jobs -->
+  <div class="col-md-8">
+
+    <!-- Recent Applications -->
+    <div class="card border-0 shadow-sm mb-4">
+      <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h6 class="fw-bold mb-0">
+            <i class="bi bi-clock-history me-1 text-primary"></i>
+            Recent Applications
+          </h6>
+          <a href="{% url 'applications:my_applications' %}"
+             class="btn btn-sm btn-outline-primary">View All</a>
+        </div>
+        {% for app in my_apps %}
+        <div class="d-flex justify-content-between align-items-center
+                    border-bottom py-2">
+          <div>
+            <p class="fw-semibold mb-0 small">{{ app.job.title }}</p>
+            <small class="text-muted">{{ app.job.company.name }}</small>
+          </div>
+          <div class="text-end">
+            {% if app.status == 'selected' %}
+              <span class="badge bg-success">Selected</span>
+            {% elif app.status == 'rejected' %}
+              <span class="badge bg-danger">Rejected</span>
+            {% elif app.status == 'shortlisted' %}
+              <span class="badge bg-info text-dark">Shortlisted</span>
+            {% else %}
+              <span class="badge bg-secondary">Applied</span>
+            {% endif %}
+            <br>
+            <small class="text-muted">
+              {{ app.applied_at|date:"d M" }}
+            </small>
+          </div>
+        </div>
+        {% empty %}
+        <div class="text-center py-3">
+          <p class="text-muted mb-2">No applications yet.</p>
+          <a href="{% url 'companies:browse_jobs' %}"
+             class="btn btn-sm btn-primary">Browse Jobs</a>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- Open Jobs -->
+    <div class="card border-0 shadow-sm">
+      <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h6 class="fw-bold mb-0">
+            <i class="bi bi-briefcase me-1 text-success"></i>
+            Latest Open Jobs
+          </h6>
+          <a href="{% url 'companies:browse_jobs' %}"
+             class="btn btn-sm btn-outline-success">Browse All</a>
+        </div>
+        <div class="row g-3">
+          {% for job in open_jobs %}
+          <div class="col-md-6">
+            <div class="border rounded-3 p-3 h-100">
+              <p class="fw-semibold mb-0 small">{{ job.title }}</p>
+              <small class="text-primary fw-semibold">
+                {{ job.company.name }}
+              </small><br>
+              <small class="text-success fw-semibold">
+                {{ job.ctc_display }}
+              </small>
+              <div class="mt-2">
+                <a href="{% url 'companies:job_detail' job.pk %}"
+                   class="btn btn-sm btn-outline-primary w-100">
+                  View Details
+                </a>
+              </div>
+            </div>
+          </div>
+          {% empty %}
+          <div class="col-12 text-center text-muted py-2">
+            No open jobs right now.
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+{% else %}
+<!-- No Profile Yet -->
+<div class="text-center py-5">
+  <i class="bi bi-person-x" style="font-size:4rem;color:#d1d5db;"></i>
+  <h4 class="text-muted mt-3">Your profile is incomplete.</h4>
+  <p class="text-muted">Complete your profile to start applying for jobs.</p>
+  <a href="{% url 'students:create_profile' %}"
+     class="btn btn-primary btn-lg mt-2">
+    <i class="bi bi-person-plus me-2"></i> Complete Profile Now
+  </a>
+</div>
+{% endif %}
+
+{% endblock %}

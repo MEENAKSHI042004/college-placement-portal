@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+{% block title %}Companies{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h2 class="fw-bold">Companies</h2>
+  <a href="{% url 'companies:company_create' %}" class="btn btn-primary">+ Add Company</a>
+</div>
+<div class="card border-0 shadow-sm mb-4">
+  <div class="card-body">
+    <form method="get" class="row g-3 align-items-end">
+      <div class="col-md-5">
+        <input type="text" name="search" class="form-control"
+               placeholder="Search company..." value="{{ request.GET.search }}">
+      </div>
+      <div class="col-md-4">
+        <select name="industry" class="form-select">
+          <option value="">All Industries</option>
+          {% for val, label in industry_choices %}
+            <option value="{{ val }}" {% if request.GET.industry == val %}selected{% endif %}>
+              {{ label }}
+            </option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col-md-2">
+        <button type="submit" class="btn btn-outline-primary w-100">Filter</button>
+      </div>
+    </form>
+  </div>
+</div>
+<div class="row g-4">
+  {% for company in companies %}
+  <div class="col-md-4">
+    <div class="card border-0 shadow-sm h-100">
+      <div class="card-body">
+        <div class="d-flex align-items-center mb-3">
+          {% if company.logo %}
+            <img src="{{ company.logo.url }}" width="50" height="50" class="rounded me-3" style="object-fit:contain;">
+          {% else %}
+            <div class="bg-primary text-white rounded d-flex align-items-center justify-content-center me-3 fw-bold"
+                 style="width:50px;height:50px;font-size:1.2rem;">
+              {{ company.name|first }}
+            </div>
+          {% endif %}
+          <div>
+            <h6 class="fw-bold mb-0">{{ company.name }}</h6>
+            <small class="text-muted">{{ company.get_industry_display }}</small>
+          </div>
+        </div>
+        <p class="text-muted small mb-1">📍 {{ company.location|default:"—" }}</p>
+        <p class="text-muted small mb-2">💼 {{ company.job_posts.count }} Job(s)</p>
+        {% if company.is_active %}
+          <span class="badge bg-success">Active</span>
+        {% else %}
+          <span class="badge bg-secondary">Inactive</span>
+        {% endif %}
+      </div>
+      <div class="card-footer bg-transparent border-0 d-flex gap-2">
+        <a href="{% url 'companies:company_detail' company.pk %}" class="btn btn-sm btn-outline-primary">View</a>
+        <a href="{% url 'companies:company_update' company.pk %}" class="btn btn-sm btn-outline-secondary">Edit</a>
+      </div>
+    </div>
+  </div>
+  {% empty %}
+  <div class="col-12 text-center text-muted py-5">
+    <h5>No companies found.</h5>
+    <a href="{% url 'companies:company_create' %}" class="btn btn-primary mt-2">Add First Company</a>
+  </div>
+  {% endfor %}
+</div>
+{% endblock %}
