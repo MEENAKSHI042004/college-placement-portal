@@ -309,7 +309,13 @@
         </li>
 
       </ul>
-      {% endif %}
+      <li class="nav-item">
+  <a class="nav-link {% if request.resolver_match.app_name == 'interviews' %}active{% endif %}"
+     href="{% url 'interviews:interview_list' %}">
+    <i class="bi bi-calendar-event"></i> Interviews
+  </a>
+</li>
+
 
       <!-- ── STUDENT NAV ────────────────── -->
       {% if user.is_student %}
@@ -344,6 +350,12 @@
         </li>
 
       </ul>
+      <li class="nav-item">
+  <a class="nav-link {% if 'my_interviews' in request.path %}active{% endif %}"
+     href="{% url 'interviews:my_interviews' %}">
+    <i class="bi bi-calendar-check"></i> My Interviews
+  </a>
+</li>
       {% endif %}
 
       <!-- ── RIGHT SIDE: User Info ──────── -->

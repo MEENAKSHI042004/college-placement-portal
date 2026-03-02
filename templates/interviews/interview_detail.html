@@ -1,0 +1,164 @@
+{% extends 'base.html' %}
+{% block title %}{{ interview.job.company.name }} — Interview{% endblock %}
+{% block content %}
+
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item">
+      <a href="{% url 'interviews:interview_list' %}">Interviews</a>
+    </li>
+    <li class="breadcrumb-item active">
+      {{ interview.job.company.name }}
+    </li>
+  </ol>
+</nav>
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <div>
+    <h2 class="fw-bold mb-0">{{ interview.job.company.name }}</h2>
+    <p class="text-muted mb-0">
+      {{ interview.get_round_name_display }} —
+      {{ interview.job.title }}
+    </p>
+  </div>
+  <div class="d-flex gap-2">
+    <a href="{% url 'interviews:interview_update' interview.pk %}"
+       class="btn btn-outline-primary">
+      <i class="bi bi-pencil me-1"></i> Edit
+    </a>
+    <form method="post"
+          action="{% url 'interviews:interview_delete' interview.pk %}"
+          onsubmit="return confirm('Delete this interview?')">
+      {% csrf_token %}
+      <button type="submit" class="btn btn-outline-danger">
+        <i class="bi bi-trash me-1"></i> Delete
+      </button>
+    </form>
+  </div>
+</div>
+
+<div class="row g-4">
+
+  <!-- Left: Details -->
+  <div class="col-md-4">
+    <div class="card border-0 shadow-sm mb-4">
+      <div class="card-body">
+        <h6 class="fw-bold text-muted mb-3">INTERVIEW DETAILS</h6>
+
+        <p>
+          <small class="text-muted d-block">Status</small>
+          {% if interview.status == 'scheduled' %}
+            <span class="badge bg-primary fs-6">Scheduled</span>
+          {% elif interview.status == 'completed' %}
+            <span class="badge bg-success fs-6">Completed</span>
+          {% elif interview.status == 'cancelled' %}
+            <span class="badge bg-danger fs-6">Cancelled</span>
+          {% else %}
+            <span class="badge bg-warning text-dark fs-6">Postponed</span>
+          {% endif %}
+        </p>
+
+        <p>
+          <small class="text-muted d-block">Round</small>
+          <strong>{{ interview.get_round_name_display }}</strong>
+        </p>
+        <p>
+          <small class="text-muted d-block">Date</small>
+          <strong>{{ interview.scheduled_date }}</strong>
+        </p>
+        <p>
+          <small class="text-muted d-block">Time</small>
+          <strong>
+            {{ interview.start_time }}
+            {% if interview.end_time %} — {{ interview.end_time }}{% endif %}
+          </strong>
+        </p>
+        <p>
+          <small class="text-muted d-block">Mode</small>
+          <strong>{{ interview.get_mode_display }}</strong>
+        </p>
+
+        {% if interview.venue %}
+        <p>
+          <small class="text-muted d-block">Venue</small>
+          <strong>{{ interview.venue }}</strong>
+        </p>
+        {% endif %}
+
+        {% if interview.meeting_link %}
+        <p>
+          <small class="text-muted d-block">Meeting Link</small>
+          <a href="{{ interview.meeting_link }}" target="_blank"
+             class="btn btn-sm btn-success w-100 mt-1">
+            <i class="bi bi-camera-video me-1"></i> Join Meeting
+          </a>
+        </p>
+        {% endif %}
+
+        {% if interview.instructions %}
+        <hr>
+        <p>
+          <small class="text-muted d-block">Instructions</small>
+          <span class="small">{{ interview.instructions }}</span>
+        </p>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <!-- Right: Students -->
+  <div class="col-md-8">
+    <div class="card border-0 shadow-sm">
+      <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h5 class="fw-bold mb-0">
+            <i class="bi bi-people me-2 text-primary"></i>
+            Invited Students
+            <span class="badge bg-primary ms-2">
+              {{ interview.student_count }}
+            </span>
+          </h5>
+        </div>
+
+        <div class="table-responsive">
+          <table class="table table-hover mb-0">
+            <thead class="table-light">
+              <tr>
+                <th>Roll No</th>
+                <th>Name</th>
+                <th>Branch</th>
+                <th>CGPA</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for student in interview.students.all %}
+              <tr>
+                <td class="fw-semibold">{{ student.roll_number }}</td>
+                <td>{{ student.user.full_name }}</td>
+                <td>{{ student.get_branch_display }}</td>
+                <td>{{ student.cgpa }}</td>
+                <td>
+                  <a href="{% url 'students:student_detail' student.pk %}"
+                     class="btn btn-sm btn-outline-primary">View</a>
+                </td>
+              </tr>
+              {% empty %}
+              <tr>
+                <td colspan="5" class="text-center text-muted py-4">
+                  No students invited yet.
+                  <a href="{% url 'interviews:interview_update' interview.pk %}">
+                    Add students
+                  </a>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+{% endblock %}

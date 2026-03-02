@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <style>
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: #f3f4f6;
+      margin: 0; padding: 0;
+    }
+    .wrapper {
+      max-width: 600px;
+      margin: 30px auto;
+      background: #ffffff;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    }
+    .header {
+      background: linear-gradient(135deg, #1a56db, #1e3a8a);
+      padding: 30px;
+      text-align: center;
+      color: white;
+    }
+    .header h1 { font-size: 1.6rem; margin: 0; }
+    .header p  { margin: 8px 0 0; opacity: 0.9; }
+    .body { padding: 30px; }
+    .info-box {
+      background: #eff6ff;
+      border-radius: 12px;
+      padding: 20px;
+      margin: 20px 0;
+      border-left: 4px solid #1a56db;
+    }
+    .info-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 0;
+      border-bottom: 1px solid #dbeafe;
+      font-size: 0.9rem;
+    }
+    .info-row:last-child { border-bottom: none; }
+    .info-label { color: #1e3a8a; font-weight: 500; }
+    .info-value { color: #1e40af; font-weight: 600; }
+    .success-badge {
+      display: inline-block;
+      background: #d1fae5;
+      color: #065f46;
+      padding: 8px 20px;
+      border-radius: 20px;
+      font-weight: 700;
+      margin: 12px 0;
+    }
+    .btn {
+      display: inline-block;
+      background: #1a56db;
+      color: white !important;
+      padding: 12px 28px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 600;
+      margin: 16px 0;
+    }
+    .footer {
+      text-align: center;
+      padding: 20px;
+      font-size: 0.8rem;
+      color: #9ca3af;
+      background: #f9fafb;
+      border-top: 1px solid #e5e7eb;
+    }
+  </style>
+</head>
+<body>
+<div class="wrapper">
+
+  <div class="header">
+    <h1>✅ Application Submitted!</h1>
+    <p>Your application has been received successfully</p>
+  </div>
+
+  <div class="body">
+    <p style="font-size:1.1rem;color:#111827;">
+      Dear <strong>{{ student_name }}</strong>,
+    </p>
+    <p style="color:#374151;">
+      Your application has been successfully submitted.
+      The TPO team will review it and update your status shortly.
+    </p>
+
+    <span class="success-badge">✅ Application Received</span>
+
+    <div class="info-box">
+      <div class="info-row">
+        <span class="info-label">Company</span>
+        <span class="info-value">{{ company_name }}</span>
+      </div>
+      <div class="info-row">
+        <span class="info-label">Job Title</span>
+        <span class="info-value">{{ job_title }}</span>
+      </div>
+      <div class="info-row">
+        <span class="info-label">CTC</span>
+        <span class="info-value">{{ ctc }}</span>
+      </div>
+      <div class="info-row">
+        <span class="info-label">Application Deadline</span>
+        <span class="info-value">{{ deadline }}</span>
+      </div>
+    </div>
+
+    <p style="color:#6b7280;font-size:0.9rem;">
+      You will receive an email notification when your
+      application status is updated. Good luck! 🌟
+    </p>
+
+    <a href="http://127.0.0.1:8000/applications/my/" class="btn">
+      Track My Application →
+    </a>
+  </div>
+
+  <div class="footer">
+    <p>🎓 <strong>Placement Portal</strong> — College Training & Placement Cell</p>
+    <p>This is an automated email. Please do not reply.</p>
+  </div>
+
+</div>
+</body>
+</html>

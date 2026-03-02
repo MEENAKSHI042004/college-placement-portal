@@ -1,23 +1,55 @@
 {% extends 'base.html' %}
-{% block title %}Students{% endblock %}
+{% block title %}All Students{% endblock %}
 {% block content %}
+
+<!-- Breadcrumb -->
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item active">
+      <i class="bi bi-people me-1"></i> Students
+    </li>
+  </ol>
+</nav>
+
+<!-- Header -->
 <div class="d-flex justify-content-between align-items-center mb-4">
-  <h2 class="fw-bold">All Students</h2>
-  <a href="{% url 'students:create_student' %}" class="btn btn-primary">+ Add Student</a>
+  <div>
+    <h2 class="fw-bold mb-0">All Students</h2>
+    <p class="text-muted mb-0">Total: {{ paginator.count }} students</p>
+  </div>
+  <div class="d-flex gap-2">
+    <a href="{% url 'students:bulk_upload' %}"
+       class="btn btn-success">
+      <i class="bi bi-upload me-1"></i> Bulk Upload
+    </a>
+    <a href="{% url 'students:create_student' %}"
+       class="btn btn-primary">
+      <i class="bi bi-person-plus me-1"></i> Add Student
+    </a>
+  </div>
 </div>
 
 <!-- Filters -->
 <div class="card border-0 shadow-sm mb-4">
   <div class="card-body">
-    <form method="get" class="row g-3">
+    <form method="get" class="row g-3 align-items-end">
       <div class="col-md-3">
-        <input type="text" name="search" class="form-control" placeholder="Search name or roll no" value="{{ request.GET.search }}">
+        <input
+          type="text"
+          name="search"
+          class="form-control"
+          placeholder="Search name or roll no..."
+          value="{{ request.GET.search }}"
+        >
       </div>
       <div class="col-md-2">
         <select name="branch" class="form-select">
           <option value="">All Branches</option>
           {% for val, label in branch_choices %}
-            <option value="{{ val }}" {% if request.GET.branch == val %}selected{% endif %}>{{ label }}</option>
+            <option value="{{ val }}"
+              {% if request.GET.branch == val %}selected{% endif %}>
+              {{ label }}
+            </option>
           {% endfor %}
         </select>
       </div>
@@ -25,20 +57,34 @@
         <select name="year" class="form-select">
           <option value="">All Years</option>
           {% for val, label in year_choices %}
-            <option value="{{ val }}" {% if request.GET.year == val|stringformat:"s" %}selected{% endif %}>{{ label }}</option>
+            <option value="{{ val }}"
+              {% if request.GET.year == val|stringformat:"s" %}selected{% endif %}>
+              {{ label }}
+            </option>
           {% endfor %}
         </select>
       </div>
       <div class="col-md-2">
         <select name="status" class="form-select">
           <option value="">All Status</option>
-          {% for val, label in status_choices %}
-            <option value="{{ val }}" {% if request.GET.status == val %}selected{% endif %}>{{ label }}</option>
+          {% for val, label in placement_status_choices %}
+            <option value="{{ val }}"
+              {% if request.GET.status == val %}selected{% endif %}>
+              {{ label }}
+            </option>
           {% endfor %}
         </select>
       </div>
-      <div class="col-md-2">
-        <button type="submit" class="btn btn-outline-primary w-100">Filter</button>
+      <div class="col-md-1">
+        <button type="submit" class="btn btn-outline-primary w-100">
+          Filter
+        </button>
+      </div>
+      <div class="col-md-1">
+        <a href="{% url 'students:student_list' %}"
+           class="btn btn-outline-secondary w-100">
+          Clear
+        </a>
       </div>
     </form>
   </div>
@@ -47,46 +93,70 @@
 <!-- Table -->
 <div class="card border-0 shadow-sm">
   <div class="card-body p-0">
-    <table class="table table-hover mb-0">
-      <thead class="table-light">
-        <tr>
-          <th>Roll No</th>
-          <th>Name</th>
-          <th>Branch</th>
-          <th>Year</th>
-          <th>CGPA</th>
-          <th>Backlogs</th>
-          <th>Status</th>
-          <th>Action</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for student in students %}
-        <tr>
-          <td>{{ student.roll_number }}</td>
-          <td>{{ student.user.full_name }}</td>
-          <td>{{ student.get_branch_display }}</td>
-          <td>Year {{ student.year }}</td>
-          <td>{{ student.cgpa }}</td>
-          <td>{{ student.backlogs }}</td>
-          <td>
-            {% if student.placement_status == 'placed' %}
-              <span class="badge bg-success">Placed</span>
-            {% elif student.placement_status == 'not_placed' %}
-              <span class="badge bg-warning text-dark">Not Placed</span>
-            {% else %}
-              <span class="badge bg-info">Higher Studies</span>
-            {% endif %}
-          </td>
-          <td>
-            <a href="{% url 'students:student_detail' student.pk %}" class="btn btn-sm btn-outline-primary">View</a>
-          </td>
-        </tr>
-        {% empty %}
-        <tr><td colspan="8" class="text-center text-muted py-4">No students found.</td></tr>
-        {% endfor %}
-      </tbody>
-    </table>
+    <div class="table-responsive">
+      <table class="table table-hover mb-0">
+        <thead class="table-light">
+          <tr>
+            <th>Roll No</th>
+            <th>Name</th>
+            <th>Branch</th>
+            <th>Year</th>
+            <th>CGPA</th>
+            <th>Backlogs</th>
+            <th>Status</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for student in students %}
+          <tr>
+            <td class="fw-semibold">{{ student.roll_number }}</td>
+            <td>{{ student.user.full_name }}</td>
+            <td>{{ student.get_branch_display }}</td>
+            <td>Year {{ student.year }}</td>
+            <td>
+              <span class="fw-semibold
+                {% if student.cgpa >= 8 %}text-success
+                {% elif student.cgpa >= 6 %}text-warning
+                {% else %}text-danger{% endif %}">
+                {{ student.cgpa }}
+              </span>
+            </td>
+            <td>
+              {% if student.backlogs == 0 %}
+                <span class="badge bg-success">0</span>
+              {% else %}
+                <span class="badge bg-danger">{{ student.backlogs }}</span>
+              {% endif %}
+            </td>
+            <td>
+              {% if student.placement_status == 'placed' %}
+                <span class="badge bg-success">Placed ✅</span>
+              {% elif student.placement_status == 'higher_studies' %}
+                <span class="badge bg-info text-dark">Higher Studies</span>
+              {% else %}
+                <span class="badge bg-warning text-dark">Not Placed</span>
+              {% endif %}
+            </td>
+            <td>
+              <a href="{% url 'students:student_detail' student.pk %}"
+                 class="btn btn-sm btn-outline-primary">
+                View
+              </a>
+            </td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="8" class="text-center text-muted py-5">
+              <i class="bi bi-people"
+                 style="font-size:2rem;color:#d1d5db;"></i>
+              <p class="mt-2 mb-0">No students found.</p>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
   </div>
 </div>
 
@@ -95,13 +165,28 @@
 <nav class="mt-4">
   <ul class="pagination justify-content-center">
     {% if page_obj.has_previous %}
-      <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a></li>
+      <li class="page-item">
+        <a class="page-link"
+           href="?page={{ page_obj.previous_page_number }}">
+          ← Previous
+        </a>
+      </li>
     {% endif %}
-    <li class="page-item active"><span class="page-link">{{ page_obj.number }}</span></li>
+    <li class="page-item active">
+      <span class="page-link">
+        Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+      </span>
+    </li>
     {% if page_obj.has_next %}
-      <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a></li>
+      <li class="page-item">
+        <a class="page-link"
+           href="?page={{ page_obj.next_page_number }}">
+          Next →
+        </a>
+      </li>
     {% endif %}
   </ul>
 </nav>
 {% endif %}
+
 {% endblock %}

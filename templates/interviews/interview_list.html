@@ -1,0 +1,184 @@
+{% extends 'base.html' %}
+{% block title %}Interview Schedules{% endblock %}
+{% block content %}
+
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item active">
+      <i class="bi bi-calendar-event me-1"></i> Interviews
+    </li>
+  </ol>
+</nav>
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <div>
+    <h2 class="fw-bold mb-0">Interview Schedules</h2>
+    <p class="text-muted mb-0">Manage all interview rounds</p>
+  </div>
+  <div class="d-flex gap-2">
+    <a href="{% url 'interviews:calendar' %}"
+       class="btn btn-outline-primary">
+      <i class="bi bi-calendar3 me-1"></i> Calendar View
+    </a>
+    <a href="{% url 'interviews:interview_create' %}"
+       class="btn btn-primary">
+      <i class="bi bi-plus-circle me-1"></i> Schedule Interview
+    </a>
+  </div>
+</div>
+
+<!-- Filters -->
+<div class="card border-0 shadow-sm mb-4">
+  <div class="card-body">
+    <form method="get" class="row g-3 align-items-end">
+      <div class="col-md-3">
+        <select name="status" class="form-select">
+          <option value="">All Status</option>
+          {% for val, label in status_choices %}
+            <option value="{{ val }}"
+              {% if request.GET.status == val %}selected{% endif %}>
+              {{ label }}
+            </option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col-md-3">
+        <select name="mode" class="form-select">
+          <option value="">All Modes</option>
+          {% for val, label in mode_choices %}
+            <option value="{{ val }}"
+              {% if request.GET.mode == val %}selected{% endif %}>
+              {{ label }}
+            </option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col-md-2">
+        <button type="submit" class="btn btn-outline-primary w-100">
+          Filter
+        </button>
+      </div>
+      <div class="col-md-2">
+        <a href="{% url 'interviews:interview_list' %}"
+           class="btn btn-outline-secondary w-100">Clear</a>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Interview Cards -->
+<div class="row g-4">
+  {% for interview in interviews %}
+  <div class="col-md-6">
+    <div class="card border-0 shadow-sm h-100">
+      <div class="card-body">
+
+        <div class="d-flex justify-content-between align-items-start mb-3">
+          <div>
+            <h5 class="fw-bold mb-0">
+              {{ interview.job.company.name }}
+            </h5>
+            <small class="text-muted">{{ interview.job.title }}</small>
+          </div>
+          {% if interview.status == 'scheduled' %}
+            <span class="badge bg-primary">Scheduled</span>
+          {% elif interview.status == 'completed' %}
+            <span class="badge bg-success">Completed</span>
+          {% elif interview.status == 'cancelled' %}
+            <span class="badge bg-danger">Cancelled</span>
+          {% else %}
+            <span class="badge bg-warning text-dark">Postponed</span>
+          {% endif %}
+        </div>
+
+        <div class="row g-2 mb-3">
+          <div class="col-6">
+            <small class="text-muted d-block">📋 Round</small>
+            <strong>{{ interview.get_round_name_display }}</strong>
+          </div>
+          <div class="col-6">
+            <small class="text-muted d-block">📅 Date</small>
+            <strong
+              {% if interview.scheduled_date == today %}
+                class="text-success"
+              {% elif interview.scheduled_date < today %}
+                class="text-muted"
+              {% else %}
+                class="text-primary"
+              {% endif %}>
+              {{ interview.scheduled_date }}
+              {% if interview.scheduled_date == today %}
+                <span class="badge bg-success ms-1">Today</span>
+              {% endif %}
+            </strong>
+          </div>
+          <div class="col-6">
+            <small class="text-muted d-block">⏰ Time</small>
+            <strong>{{ interview.start_time }}</strong>
+          </div>
+          <div class="col-6">
+            <small class="text-muted d-block">📡 Mode</small>
+            <strong>{{ interview.get_mode_display }}</strong>
+          </div>
+          <div class="col-6">
+            <small class="text-muted d-block">👥 Students</small>
+            <strong>{{ interview.student_count }}</strong>
+          </div>
+          {% if interview.venue %}
+          <div class="col-6">
+            <small class="text-muted d-block">📍 Venue</small>
+            <strong>{{ interview.venue }}</strong>
+          </div>
+          {% endif %}
+        </div>
+
+      </div>
+      <div class="card-footer bg-transparent border-0 d-flex gap-2">
+        <a href="{% url 'interviews:interview_detail' interview.pk %}"
+           class="btn btn-sm btn-outline-primary w-100">
+          View Details
+        </a>
+        <a href="{% url 'interviews:interview_update' interview.pk %}"
+           class="btn btn-sm btn-outline-secondary w-100">
+          Edit
+        </a>
+      </div>
+    </div>
+  </div>
+  {% empty %}
+  <div class="col-12 text-center py-5">
+    <i class="bi bi-calendar-x"
+       style="font-size:3rem;color:#d1d5db;"></i>
+    <h5 class="text-muted mt-3">No interviews scheduled yet.</h5>
+    <a href="{% url 'interviews:interview_create' %}"
+       class="btn btn-primary mt-2">Schedule First Interview</a>
+  </div>
+  {% endfor %}
+</div>
+
+<!-- Pagination -->
+{% if is_paginated %}
+<nav class="mt-4">
+  <ul class="pagination justify-content-center">
+    {% if page_obj.has_previous %}
+      <li class="page-item">
+        <a class="page-link"
+           href="?page={{ page_obj.previous_page_number }}">← Previous</a>
+      </li>
+    {% endif %}
+    <li class="page-item active">
+      <span class="page-link">
+        Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+      </span>
+    </li>
+    {% if page_obj.has_next %}
+      <li class="page-item">
+        <a class="page-link"
+           href="?page={{ page_obj.next_page_number }}">Next →</a>
+      </li>
+    {% endif %}
+  </ul>
+</nav>
+{% endif %}
+
+{% endblock %}

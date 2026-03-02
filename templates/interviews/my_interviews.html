@@ -1,0 +1,118 @@
+{% extends 'base.html' %}
+{% block title %}My Interviews{% endblock %}
+{% block content %}
+
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item active">My Interviews</li>
+  </ol>
+</nav>
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h2 class="fw-bold mb-0">
+    <i class="bi bi-calendar-event me-2"></i> My Interviews
+  </h2>
+</div>
+
+<!-- Upcoming -->
+<h5 class="fw-bold mb-3 text-primary">
+  <i class="bi bi-clock me-2"></i> Upcoming Interviews
+</h5>
+
+{% if upcoming %}
+<div class="row g-4 mb-5">
+  {% for interview in upcoming %}
+  <div class="col-md-6">
+    <div class="card border-0 shadow-sm h-100"
+         style="border-left: 4px solid #1a56db !important;">
+      <div class="card-body">
+        <div class="d-flex justify-content-between mb-2">
+          <h5 class="fw-bold mb-0">
+            {{ interview.job.company.name }}
+          </h5>
+          {% if interview.scheduled_date == today %}
+            <span class="badge bg-success">Today!</span>
+          {% endif %}
+        </div>
+        <p class="text-muted mb-3">{{ interview.job.title }}</p>
+
+        <div class="row g-2">
+          <div class="col-6">
+            <small class="text-muted d-block">📋 Round</small>
+            <strong>{{ interview.get_round_name_display }}</strong>
+          </div>
+          <div class="col-6">
+            <small class="text-muted d-block">📅 Date</small>
+            <strong class="text-primary">{{ interview.scheduled_date }}</strong>
+          </div>
+          <div class="col-6">
+            <small class="text-muted d-block">⏰ Time</small>
+            <strong>{{ interview.start_time }}</strong>
+          </div>
+          <div class="col-6">
+            <small class="text-muted d-block">📡 Mode</small>
+            <strong>{{ interview.get_mode_display }}</strong>
+          </div>
+          {% if interview.venue %}
+          <div class="col-12">
+            <small class="text-muted d-block">📍 Venue</small>
+            <strong>{{ interview.venue }}</strong>
+          </div>
+          {% endif %}
+        </div>
+
+        {% if interview.meeting_link %}
+        <a href="{{ interview.meeting_link }}" target="_blank"
+           class="btn btn-success btn-sm w-100 mt-3">
+          <i class="bi bi-camera-video me-1"></i> Join Meeting
+        </a>
+        {% endif %}
+
+        {% if interview.instructions %}
+        <div class="alert alert-info py-2 mt-3 mb-0 small">
+          <strong>Instructions:</strong> {{ interview.instructions }}
+        </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% else %}
+<div class="text-center py-4 mb-5">
+  <i class="bi bi-calendar-check"
+     style="font-size:2.5rem;color:#d1d5db;"></i>
+  <p class="text-muted mt-2">No upcoming interviews scheduled.</p>
+</div>
+{% endif %}
+
+<!-- Past -->
+{% if past %}
+<h5 class="fw-bold mb-3 text-muted">
+  <i class="bi bi-clock-history me-2"></i> Past Interviews
+</h5>
+<div class="card border-0 shadow-sm">
+  <div class="card-body p-0">
+    <table class="table table-hover mb-0">
+      <thead class="table-light">
+        <tr>
+          <th>Company</th><th>Round</th>
+          <th>Date</th><th>Mode</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for interview in past %}
+        <tr class="text-muted">
+          <td>{{ interview.job.company.name }}</td>
+          <td>{{ interview.get_round_name_display }}</td>
+          <td>{{ interview.scheduled_date }}</td>
+          <td>{{ interview.get_mode_display }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endif %}
+
+{% endblock %}

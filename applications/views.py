@@ -7,6 +7,10 @@ from accounts.mixins import AdminRequiredMixin, StudentRequiredMixin
 from companies.models import JobPost
 from students.models import StudentProfile
 
+from .emails import (
+    send_application_confirmation_email,
+    send_status_change_email,
+)
 from .forms import ApplicationStatusForm
 from .models import Application, ApplicationStatusLog
 
@@ -56,7 +60,15 @@ class ApplyJobView(StudentRequiredMixin, View):
             round_name='applied',
             remarks='Application submitted successfully.'
         )
-        messages.success(request, f'Successfully applied for {job.title} at {job.company.name}!')
+
+        # ── Send Confirmation Email ─────────────
+        send_application_confirmation_email(application)
+
+        messages.success(
+            request,
+            f'Successfully applied for {job.title} at {job.company.name}! '
+            f'A confirmation email has been sent.'
+        )
         return redirect('applications:my_applications')
 
 
@@ -150,18 +162,28 @@ class UpdateApplicationStatusView(AdminRequiredMixin, View):
         form        = ApplicationStatusForm(request.POST, instance=application)
         if form.is_valid():
             application = form.save()
+
+            # ── Log the change ───────────────────
             ApplicationStatusLog.objects.create(
                 application=application,
                 changed_to=application.status,
                 round_name=application.current_round,
                 remarks=form.cleaned_data.get('remarks', '')
             )
-            # Auto-update placement status
+
+            # ── Auto-update placement status ─────
             if application.status == 'selected':
                 application.student.placement_status = 'placed'
                 application.student.save()
 
-            messages.success(request, 'Application status updated successfully.')
+            # ── Send Email Notification ──────────
+            send_status_change_email(application)
+
+            messages.success(
+                request,
+                f'Status updated to {application.get_status_display()}. '
+                f'Email notification sent to student.'
+            )
         return redirect('applications:application_detail_admin', pk=pk)
 
 

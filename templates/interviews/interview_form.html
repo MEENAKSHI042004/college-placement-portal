@@ -1,0 +1,185 @@
+{% extends 'base.html' %}
+{% block title %}{{ title }}{% endblock %}
+{% block content %}
+
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item">
+      <a href="{% url 'interviews:interview_list' %}">Interviews</a>
+    </li>
+    <li class="breadcrumb-item active">{{ title }}</li>
+  </ol>
+</nav>
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h2 class="fw-bold mb-0">
+    <i class="bi bi-calendar-plus me-2"></i>{{ title }}
+  </h2>
+  <a href="{% url 'interviews:interview_list' %}"
+     class="btn btn-outline-secondary">← Back</a>
+</div>
+
+<div class="row g-4">
+  <div class="col-md-8">
+    <form method="post">
+      {% csrf_token %}
+
+      <!-- Basic Info -->
+      <div class="card border-0 shadow-sm mb-4">
+        <div class="card-body">
+          <h5 class="fw-bold mb-4">
+            <i class="bi bi-info-circle text-primary me-2"></i>
+            Basic Information
+          </h5>
+          <div class="row g-3">
+            <div class="col-md-12">
+              <label class="form-label fw-semibold">Job Post</label>
+              {{ form.job }}
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-semibold">Round</label>
+              {{ form.round_name }}
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-semibold">Mode</label>
+              {{ form.mode }}
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-semibold">Status</label>
+              {{ form.status }}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Schedule -->
+      <div class="card border-0 shadow-sm mb-4">
+        <div class="card-body">
+          <h5 class="fw-bold mb-4">
+            <i class="bi bi-clock text-success me-2"></i>
+            Schedule & Venue
+          </h5>
+          <div class="row g-3">
+            <div class="col-md-4">
+              <label class="form-label fw-semibold">Date</label>
+              {{ form.scheduled_date }}
+            </div>
+            <div class="col-md-4">
+              <label class="form-label fw-semibold">Start Time</label>
+              {{ form.start_time }}
+            </div>
+            <div class="col-md-4">
+              <label class="form-label fw-semibold">End Time</label>
+              {{ form.end_time }}
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-semibold">
+                Venue <small class="text-muted">(for offline)</small>
+              </label>
+              {{ form.venue }}
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-semibold">
+                Meeting Link <small class="text-muted">(for online)</small>
+              </label>
+              {{ form.meeting_link }}
+            </div>
+            <div class="col-12">
+              <label class="form-label fw-semibold">
+                Instructions for Students
+              </label>
+              {{ form.instructions }}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Students -->
+      <div class="card border-0 shadow-sm mb-4">
+        <div class="card-body">
+          <h5 class="fw-bold mb-3">
+            <i class="bi bi-people text-warning me-2"></i>
+            Invite Students
+          </h5>
+          <p class="text-muted small mb-3">
+            Select students to invite for this interview round.
+          </p>
+          <div style="max-height:300px;overflow-y:auto;border:1px solid #e5e7eb;
+                      border-radius:8px;padding:12px;">
+            {% for student in form.students %}
+            <div class="form-check mb-2">
+              {{ student.tag }}
+              <label class="form-check-label" for="{{ student.id_for_label }}">
+                {{ student.choice_label }}
+              </label>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+
+      <button type="submit" class="btn btn-primary px-5 fw-bold">
+        <i class="bi bi-calendar-check me-2"></i>
+        {% if interview %}Update Interview{% else %}Schedule Interview{% endif %}
+      </button>
+    </form>
+  </div>
+
+  <!-- Tips -->
+  <div class="col-md-4">
+    <div class="card border-0 shadow-sm">
+      <div class="card-body">
+        <h6 class="fw-bold mb-3">
+          <i class="bi bi-lightbulb text-warning me-2"></i>
+          Tips
+        </h6>
+        <ul class="text-muted small" style="line-height:2;">
+          <li>Select the correct <strong>Job Post</strong> first</li>
+          <li>Set mode to <strong>Online</strong> and add meeting link for virtual interviews</li>
+          <li>Set mode to <strong>Offline</strong> and add venue for in-person rounds</li>
+          <li>Students will see this in their <strong>My Interviews</strong> section</li>
+          <li>You can edit or cancel any scheduled interview</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Round Color Legend -->
+    <div class="card border-0 shadow-sm mt-4">
+      <div class="card-body">
+        <h6 class="fw-bold mb-3">
+          <i class="bi bi-palette text-info me-2"></i>
+          Calendar Colors
+        </h6>
+        <div class="d-flex flex-column gap-2">
+          <div class="d-flex align-items-center gap-2">
+            <div style="width:16px;height:16px;border-radius:4px;
+                        background:#1a56db;"></div>
+            <small>Aptitude Test</small>
+          </div>
+          <div class="d-flex align-items-center gap-2">
+            <div style="width:16px;height:16px;border-radius:4px;
+                        background:#10b981;"></div>
+            <small>Technical Round</small>
+          </div>
+          <div class="d-flex align-items-center gap-2">
+            <div style="width:16px;height:16px;border-radius:4px;
+                        background:#f59e0b;"></div>
+            <small>HR Round</small>
+          </div>
+          <div class="d-flex align-items-center gap-2">
+            <div style="width:16px;height:16px;border-radius:4px;
+                        background:#8b5cf6;"></div>
+            <small>Final Round</small>
+          </div>
+          <div class="d-flex align-items-center gap-2">
+            <div style="width:16px;height:16px;border-radius:4px;
+                        background:#ef4444;"></div>
+            <small>Group Discussion</small>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

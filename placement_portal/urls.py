@@ -9,7 +9,8 @@ urlpatterns = [
     path('students/',     include('students.urls')),
     path('companies/',    include('companies.urls')),
     path('applications/', include('applications.urls')),
-    path('reports/',      include('reports.urls')),         # ← NEW
+    path('reports/',      include('reports.urls')),
+    path('interviews/',   include('interviews.urls')),   # ← NEW
     path('api/v1/',       include('accounts.api_urls')),
     path('api/v1/',       include('students.api_urls')),
     path('api/v1/',       include('companies.api_urls')),

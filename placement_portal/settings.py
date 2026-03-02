@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'companies',
     'applications',
     'reports', 
+    'interviews',
  # ← THIS LINE MUST BE HERE
 ]
 
@@ -151,3 +152,14 @@ LOGIN_REDIRECT_URL = '/accounts/dashboard/'
 LOGOUT_REDIRECT_URL = '/accounts/login/'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+# ════════════════════════════════════════════════
+#  EMAIL CONFIGURATION — Gmail SMTP
+# ════════════════════════════════════════════════
+
+EMAIL_BACKEND       = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST          = 'smtp.gmail.com'
+EMAIL_PORT          = 587
+EMAIL_USE_TLS       = True
+EMAIL_HOST_USER     = 'your_email@gmail.com'      # ← Your Gmail
+EMAIL_HOST_PASSWORD = 'abcd efgh ijkl mnop'        # ← App Password
+DEFAULT_FROM_EMAIL  = 'Placement Portal <your_email@gmail.com>'
