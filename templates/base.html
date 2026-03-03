@@ -30,9 +30,7 @@
       color: #ffffff !important;
       letter-spacing: 0.3px;
     }
-    .navbar-brand span {
-      color: #93c5fd;
-    }
+    .navbar-brand span { color: #93c5fd; }
     .nav-link {
       color: rgba(255,255,255,0.85) !important;
       font-size: 0.9rem;
@@ -46,9 +44,7 @@
       color: #ffffff !important;
       background: rgba(255,255,255,0.15);
     }
-    .nav-link i {
-      margin-right: 4px;
-    }
+    .nav-link i { margin-right: 4px; }
 
     /* ── User Badge ──────────────────────── */
     .user-badge {
@@ -88,7 +84,7 @@
       color: #ffffff !important;
     }
 
-    /* ── Sidebar / Dropdown ──────────────── */
+    /* ── Dropdown ────────────────────────── */
     .dropdown-menu {
       border: none;
       box-shadow: 0 4px 20px rgba(0,0,0,0.12);
@@ -104,9 +100,7 @@
       background: #EFF6FF;
       color: #1a56db;
     }
-    .dropdown-divider {
-      margin: 6px 0;
-    }
+    .dropdown-divider { margin: 6px 0; }
 
     /* ── Page Content ────────────────────── */
     .main-content {
@@ -115,19 +109,14 @@
     }
 
     /* ── Cards ───────────────────────────── */
-    .card {
-      border-radius: 12px;
-    }
+    .card { border-radius: 12px; }
     .card:hover {
       transform: translateY(-1px);
       transition: transform 0.2s;
     }
 
-    /* ── Alerts / Messages ───────────────── */
-    .alert {
-      border-radius: 10px;
-      border: none;
-    }
+    /* ── Flash Messages ──────────────────── */
+    .alert { border-radius: 10px; border: none; }
     .messages-container {
       position: fixed;
       top: 70px;
@@ -155,9 +144,7 @@
       color: #1a56db;
       text-decoration: none;
     }
-    .breadcrumb-item.active {
-      color: #6b7280;
-    }
+    .breadcrumb-item.active { color: #6b7280; }
 
     /* ── Tables ──────────────────────────── */
     .table th {
@@ -165,17 +152,6 @@
       font-size: 0.85rem;
       text-transform: uppercase;
       letter-spacing: 0.5px;
-    }
-
-    /* ── Badges ──────────────────────────── */
-    .badge {
-      font-weight: 500;
-      padding: 5px 10px;
-    }
-
-    /* ── Progress Bar ────────────────────── */
-    .progress {
-      border-radius: 10px;
     }
 
     /* ── Footer ──────────────────────────── */
@@ -200,9 +176,9 @@
 
 <body>
 
-<!-- ════════════════════════════════════════════
+<!-- ════════════════════════════════════════
      NAVBAR
-════════════════════════════════════════════ -->
+════════════════════════════════════════ -->
 {% if user.is_authenticated %}
 <nav class="navbar navbar-expand-lg">
   <div class="container-fluid">
@@ -226,7 +202,7 @@
       <ul class="navbar-nav me-auto gap-1">
 
         <li class="nav-item">
-          <a class="nav-link {% if request.resolver_match.app_name == 'accounts' and 'dashboard' in request.path %}active{% endif %}"
+          <a class="nav-link {% if 'dashboard/admin' in request.path %}active{% endif %}"
              href="{% url 'accounts:admin_dashboard' %}">
             <i class="bi bi-speedometer2"></i> Dashboard
           </a>
@@ -247,23 +223,27 @@
           </a>
           <ul class="dropdown-menu">
             <li>
-              <a class="dropdown-item" href="{% url 'companies:company_list' %}">
+              <a class="dropdown-item"
+                 href="{% url 'companies:company_list' %}">
                 <i class="bi bi-building me-2"></i> All Companies
               </a>
             </li>
             <li>
-              <a class="dropdown-item" href="{% url 'companies:company_create' %}">
+              <a class="dropdown-item"
+                 href="{% url 'companies:company_create' %}">
                 <i class="bi bi-plus-circle me-2"></i> Add Company
               </a>
             </li>
             <li><hr class="dropdown-divider"></li>
             <li>
-              <a class="dropdown-item" href="{% url 'companies:job_list' %}">
+              <a class="dropdown-item"
+                 href="{% url 'companies:job_list' %}">
                 <i class="bi bi-briefcase me-2"></i> All Jobs
               </a>
             </li>
             <li>
-              <a class="dropdown-item" href="{% url 'companies:job_create' %}">
+              <a class="dropdown-item"
+                 href="{% url 'companies:job_create' %}">
                 <i class="bi bi-plus-circle me-2"></i> Post Job
               </a>
             </li>
@@ -271,9 +251,18 @@
         </li>
 
         <li class="nav-item">
-          <a class="nav-link {% if request.resolver_match.app_name == 'applications' %}active{% endif %}"
+          <a class="nav-link
+             {% if request.resolver_match.app_name == 'applications' %}active{% endif %}"
              href="{% url 'applications:all_applications' %}">
             <i class="bi bi-file-earmark-text"></i> Applications
+          </a>
+        </li>
+
+        <li class="nav-item">
+          <a class="nav-link
+             {% if request.resolver_match.app_name == 'interviews' %}active{% endif %}"
+             href="{% url 'interviews:interview_list' %}">
+            <i class="bi bi-calendar-event"></i> Interviews
           </a>
         </li>
 
@@ -285,23 +274,27 @@
           </a>
           <ul class="dropdown-menu">
             <li>
-              <a class="dropdown-item" href="{% url 'accounts:placement_stats' %}">
+              <a class="dropdown-item"
+                 href="{% url 'accounts:placement_stats' %}">
                 <i class="bi bi-graph-up me-2"></i> Placement Statistics
               </a>
             </li>
             <li>
-              <a class="dropdown-item" href="{% url 'accounts:company_stats' %}">
+              <a class="dropdown-item"
+                 href="{% url 'accounts:company_stats' %}">
                 <i class="bi bi-building-check me-2"></i> Company Stats
               </a>
             </li>
             <li>
-              <a class="dropdown-item" href="{% url 'accounts:student_stats' %}">
+              <a class="dropdown-item"
+                 href="{% url 'accounts:student_stats' %}">
                 <i class="bi bi-person-check me-2"></i> Student Stats
               </a>
             </li>
             <li><hr class="dropdown-divider"></li>
             <li>
-              <a class="dropdown-item" href="{% url 'reports:reports_home' %}">
+              <a class="dropdown-item"
+                 href="{% url 'reports:reports_home' %}">
                 <i class="bi bi-download me-2"></i> Export Reports
               </a>
             </li>
@@ -309,56 +302,64 @@
         </li>
 
       </ul>
-      <li class="nav-item">
-  <a class="nav-link {% if request.resolver_match.app_name == 'interviews' %}active{% endif %}"
-     href="{% url 'interviews:interview_list' %}">
-    <i class="bi bi-calendar-event"></i> Interviews
-  </a>
-</li>
-
+      {% endif %}
 
       <!-- ── STUDENT NAV ────────────────── -->
       {% if user.is_student %}
       <ul class="navbar-nav me-auto gap-1">
 
         <li class="nav-item">
-          <a class="nav-link {% if 'student_dashboard' in request.path %}active{% endif %}"
+          <a class="nav-link
+             {% if 'dashboard/student' in request.path %}active{% endif %}"
              href="{% url 'accounts:student_dashboard' %}">
             <i class="bi bi-house"></i> Dashboard
           </a>
         </li>
 
         <li class="nav-item">
-          <a class="nav-link {% if 'profile' in request.path and request.resolver_match.app_name == 'students' %}active{% endif %}"
+          <a class="nav-link
+             {% if 'profile' in request.path and request.resolver_match.app_name == 'students' %}active{% endif %}"
              href="{% url 'students:my_profile' %}">
             <i class="bi bi-person-circle"></i> My Profile
           </a>
         </li>
 
         <li class="nav-item">
-          <a class="nav-link {% if 'browse' in request.path %}active{% endif %}"
+          <a class="nav-link
+             {% if 'browse' in request.path %}active{% endif %}"
              href="{% url 'companies:browse_jobs' %}">
             <i class="bi bi-briefcase"></i> Browse Jobs
           </a>
         </li>
 
         <li class="nav-item">
-          <a class="nav-link {% if 'my' in request.path and request.resolver_match.app_name == 'applications' %}active{% endif %}"
+          <a class="nav-link
+             {% if request.resolver_match.app_name == 'applications' and 'my' in request.path %}active{% endif %}"
              href="{% url 'applications:my_applications' %}">
             <i class="bi bi-file-earmark-check"></i> My Applications
           </a>
         </li>
 
+        <li class="nav-item">
+          <a class="nav-link
+             {% if request.resolver_match.app_name == 'interviews' %}active{% endif %}"
+             href="{% url 'interviews:my_interviews' %}">
+            <i class="bi bi-calendar-check"></i> My Interviews
+          </a>
+        </li>
+
+        <li class="nav-item">
+          <a class="nav-link
+             {% if 'resume' in request.path %}active{% endif %}"
+             href="{% url 'students:my_resume' %}">
+            <i class="bi bi-file-earmark-person"></i> My Resume
+          </a>
+        </li>
+
       </ul>
-      <li class="nav-item">
-  <a class="nav-link {% if 'my_interviews' in request.path %}active{% endif %}"
-     href="{% url 'interviews:my_interviews' %}">
-    <i class="bi bi-calendar-check"></i> My Interviews
-  </a>
-</li>
       {% endif %}
 
-      <!-- ── RIGHT SIDE: User Info ──────── -->
+      <!-- ── RIGHT: User Info ───────────── -->
       <ul class="navbar-nav ms-auto align-items-center gap-2">
         <li class="nav-item">
           <span class="user-badge">
@@ -373,7 +374,8 @@
           </span>
         </li>
         <li class="nav-item">
-          <a href="{% url 'accounts:logout' %}" class="nav-link btn-logout">
+          <a href="{% url 'accounts:logout' %}"
+             class="nav-link btn-logout">
             <i class="bi bi-box-arrow-right me-1"></i> Logout
           </a>
         </li>
@@ -385,9 +387,9 @@
 {% endif %}
 
 
-<!-- ════════════════════════════════════════════
+<!-- ════════════════════════════════════════
      FLASH MESSAGES
-════════════════════════════════════════════ -->
+════════════════════════════════════════ -->
 {% if messages %}
 <div class="messages-container">
   {% for message in messages %}
@@ -396,42 +398,41 @@
     {% elif message.tags == 'error' %}alert-danger
     {% elif message.tags == 'warning' %}alert-warning
     {% else %}alert-info{% endif %}
-    alert-dismissible fade show shadow-sm"
+    alert-dismissible fade show"
     role="alert">
     {% if message.tags == 'success' %}✅
     {% elif message.tags == 'error' %}❌
     {% elif message.tags == 'warning' %}⚠️
     {% else %}ℹ️{% endif %}
     {{ message }}
-    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    <button type="button" class="btn-close"
+            data-bs-dismiss="alert"></button>
   </div>
   {% endfor %}
 </div>
 {% endif %}
 
 
-<!-- ════════════════════════════════════════════
+<!-- ════════════════════════════════════════
      MAIN CONTENT
-════════════════════════════════════════════ -->
+════════════════════════════════════════ -->
 <main class="main-content">
   <div class="container-fluid">
-
-    <!-- Breadcrumb -->
     {% block breadcrumb %}{% endblock %}
-
-    <!-- Page Content -->
     {% block content %}{% endblock %}
-
   </div>
 </main>
 
 
-<!-- ════════════════════════════════════════════
+<!-- ════════════════════════════════════════
      FOOTER
-════════════════════════════════════════════ -->
+════════════════════════════════════════ -->
 <footer class="footer">
   <div class="d-flex justify-content-between align-items-center">
-    <span>🎓 <strong>Placement Portal</strong> — College Training & Placement</span>
+    <span>
+      🎓 <strong>Placement Portal</strong>
+      — College Training & Placement
+    </span>
     <span>Built with Django & Bootstrap 5</span>
   </div>
 </footer>
@@ -443,10 +444,12 @@
 <!-- Auto-dismiss messages after 4 seconds -->
 <script>
   setTimeout(function () {
-    document.querySelectorAll('.messages-container .alert').forEach(function (el) {
-      var bsAlert = new bootstrap.Alert(el);
-      bsAlert.close();
-    });
+    document.querySelectorAll('.messages-container .alert').forEach(
+      function (el) {
+        var bsAlert = new bootstrap.Alert(el);
+        bsAlert.close();
+      }
+    );
   }, 4000);
 </script>
 

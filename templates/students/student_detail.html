@@ -1,91 +1,209 @@
 {% extends 'base.html' %}
 {% block title %}{{ student.user.full_name }}{% endblock %}
 {% block content %}
+
+<!-- Breadcrumb -->
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item">
+      <a href="{% url 'students:student_list' %}">Students</a>
+    </li>
+    <li class="breadcrumb-item active">{{ student.user.full_name }}</li>
+  </ol>
+</nav>
+
 <div class="d-flex justify-content-between align-items-center mb-4">
-  <h2 class="fw-bold">{{ student.user.full_name }}</h2>
-  <a href="{% url 'students:student_list' %}" class="btn btn-outline-secondary">← Back</a>
+  <div>
+    <h2 class="fw-bold mb-0">{{ student.user.full_name }}</h2>
+    <p class="text-muted mb-0">{{ student.roll_number }}</p>
+  </div>
+  <a href="{% url 'students:student_list' %}"
+     class="btn btn-outline-secondary">← Back</a>
 </div>
 
 <div class="row g-4">
-  <!-- Profile Info -->
+
+  <!-- ── Left: Profile Card ───────────────────── -->
   <div class="col-md-4">
-    <div class="card border-0 shadow-sm">
+    <div class="card border-0 shadow-sm mb-3">
       <div class="card-body text-center p-4">
+
         {% if student.profile_photo %}
-          <img src="{{ student.profile_photo.url }}" class="rounded-circle mb-3" width="100" height="100" style="object-fit:cover;">
+          <img src="{{ student.profile_photo.url }}"
+               class="rounded-circle mb-3"
+               width="100" height="100"
+               style="object-fit:cover;">
         {% else %}
-          <div class="bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width:100px;height:100px;font-size:2rem;">
+          <div class="bg-primary text-white rounded-circle
+                      d-inline-flex align-items-center
+                      justify-content-center mb-3 fw-bold"
+               style="width:100px;height:100px;font-size:2rem;">
             {{ student.user.full_name|first }}
           </div>
         {% endif %}
-        <h5 class="fw-bold">{{ student.user.full_name }}</h5>
-        <p class="text-muted mb-1">{{ student.user.email }}</p>
-        <p class="text-muted mb-3">{{ student.phone }}</p>
+
+        <h5 class="fw-bold mb-1">{{ student.user.full_name }}</h5>
+        <p class="text-muted mb-1 small">{{ student.user.email }}</p>
+        <p class="text-muted mb-3 small">{{ student.phone }}</p>
+
         {% if student.placement_status == 'placed' %}
-          <span class="badge bg-success fs-6">✓ Placed</span>
-        {% elif student.placement_status == 'not_placed' %}
-          <span class="badge bg-warning text-dark fs-6">Not Placed</span>
+          <span class="badge bg-success fs-6">✅ Placed</span>
+        {% elif student.placement_status == 'higher_studies' %}
+          <span class="badge bg-info text-dark fs-6">Higher Studies</span>
         {% else %}
-          <span class="badge bg-info fs-6">Higher Studies</span>
+          <span class="badge bg-warning text-dark fs-6">Not Placed</span>
+        {% endif %}
+
+        <!-- Social Links -->
+        {% if student.linkedin or student.github %}
+        <div class="mt-3 d-flex gap-2 justify-content-center">
+          {% if student.linkedin %}
+            <a href="{{ student.linkedin }}" target="_blank"
+               class="btn btn-sm btn-outline-primary">
+              <i class="bi bi-linkedin me-1"></i>LinkedIn
+            </a>
+          {% endif %}
+          {% if student.github %}
+            <a href="{{ student.github }}" target="_blank"
+               class="btn btn-sm btn-outline-dark">
+              <i class="bi bi-github me-1"></i>GitHub
+            </a>
+          {% endif %}
+        </div>
+        {% endif %}
+
+      </div>
+    </div>
+
+    <!-- ── Resume Card ───────────────────────── -->
+    <div class="card border-0 shadow-sm mb-3">
+      <div class="card-body">
+        <h6 class="fw-bold mb-3">
+          <i class="bi bi-file-earmark-person text-primary me-2"></i>
+          Resume
+        </h6>
+        {% if student.resume %}
+          <div class="d-flex gap-2">
+            <a href="{% url 'students:resume_viewer' student.pk %}"
+               class="btn btn-primary btn-sm w-100">
+              <i class="bi bi-eye me-1"></i> View Resume
+            </a>
+            <a href="{% url 'students:resume_download' student.pk %}"
+               class="btn btn-success btn-sm w-100">
+              <i class="bi bi-download me-1"></i> Download
+            </a>
+          </div>
+        {% else %}
+          <p class="text-muted small mb-0">
+            <i class="bi bi-x-circle me-1"></i>
+            No resume uploaded yet.
+          </p>
         {% endif %}
       </div>
     </div>
 
-    <!-- Update Status (Admin) -->
-    <div class="card border-0 shadow-sm mt-3">
+    <!-- ── Update Status Card ────────────────── -->
+    <div class="card border-0 shadow-sm">
       <div class="card-body">
-        <h6 class="fw-bold mb-3">Update Status</h6>
-        <form method="post" action="{% url 'students:update_status' student.pk %}">
+        <h6 class="fw-bold mb-3">
+          <i class="bi bi-pencil-square text-warning me-2"></i>
+          Update Placement Status
+        </h6>
+        <form method="post"
+              action="{% url 'students:update_placement_status' student.pk %}">
           {% csrf_token %}
           <select name="placement_status" class="form-select mb-2">
             {% for val, label in student.STATUS_CHOICES %}
-              <option value="{{ val }}" {% if student.placement_status == val %}selected{% endif %}>{{ label }}</option>
+              <option value="{{ val }}"
+                {% if student.placement_status == val %}selected{% endif %}>
+                {{ label }}
+              </option>
             {% endfor %}
           </select>
-          <button type="submit" class="btn btn-primary w-100">Update</button>
+          <button type="submit" class="btn btn-primary w-100">
+            Update Status
+          </button>
         </form>
       </div>
     </div>
+
   </div>
 
-  <!-- Academic Info -->
+  <!-- ── Right: Details ───────────────────────── -->
   <div class="col-md-8">
+
+    <!-- Academic Details -->
     <div class="card border-0 shadow-sm mb-4">
       <div class="card-body">
-        <h5 class="fw-bold mb-3">Academic Details</h5>
+        <h5 class="fw-bold mb-3">
+          <i class="bi bi-mortarboard text-primary me-2"></i>
+          Academic Details
+        </h5>
         <div class="row g-3">
-          <div class="col-md-6"><strong>Roll Number:</strong> {{ student.roll_number }}</div>
-          <div class="col-md-6"><strong>Branch:</strong> {{ student.get_branch_display }}</div>
-          <div class="col-md-6"><strong>Year:</strong> Year {{ student.year }} {% if student.section %}| Section {{ student.section }}{% endif %}</div>
-          <div class="col-md-6"><strong>CGPA:</strong> {{ student.cgpa }}</div>
-          <div class="col-md-6"><strong>Backlogs:</strong> {{ student.backlogs }}</div>
-          <div class="col-md-6"><strong>DOB:</strong> {{ student.date_of_birth|default:"—" }}</div>
+          <div class="col-md-6">
+            <small class="text-muted d-block">Roll Number</small>
+            <strong>{{ student.roll_number }}</strong>
+          </div>
+          <div class="col-md-6">
+            <small class="text-muted d-block">Branch</small>
+            <strong>{{ student.get_branch_display }}</strong>
+          </div>
+          <div class="col-md-6">
+            <small class="text-muted d-block">Year</small>
+            <strong>
+              Year {{ student.year }}
+              {% if student.section %}| Section {{ student.section }}{% endif %}
+            </strong>
+          </div>
+          <div class="col-md-6">
+            <small class="text-muted d-block">CGPA</small>
+            <strong class="
+              {% if student.cgpa >= 8 %}text-success
+              {% elif student.cgpa >= 6 %}text-warning
+              {% else %}text-danger{% endif %}">
+              {{ student.cgpa }}
+            </strong>
+          </div>
+          <div class="col-md-6">
+            <small class="text-muted d-block">Backlogs</small>
+            {% if student.backlogs == 0 %}
+              <span class="badge bg-success">0 Backlogs</span>
+            {% else %}
+              <span class="badge bg-danger">
+                {{ student.backlogs }} Backlog(s)
+              </span>
+            {% endif %}
+          </div>
+          <div class="col-md-6">
+            <small class="text-muted d-block">Date of Birth</small>
+            <strong>{{ student.date_of_birth|default:"—" }}</strong>
+          </div>
+          {% if student.address %}
+          <div class="col-12">
+            <small class="text-muted d-block">Address</small>
+            <strong>{{ student.address }}</strong>
+          </div>
+          {% endif %}
         </div>
-        {% if student.linkedin_url or student.github_url %}
-        <div class="mt-3">
-          {% if student.linkedin_url %}<a href="{{ student.linkedin_url }}" target="_blank" class="btn btn-sm btn-outline-primary me-2">LinkedIn</a>{% endif %}
-          {% if student.github_url %}<a href="{{ student.github_url }}" target="_blank" class="btn btn-sm btn-outline-dark">GitHub</a>{% endif %}
-        </div>
-        {% endif %}
-        {% if student.resume %}
-        <div class="mt-3">
-          <a href="{{ student.resume.url }}" target="_blank" class="btn btn-sm btn-success">📄 View Resume</a>
-        </div>
-        {% endif %}
       </div>
     </div>
 
     <!-- Skills -->
     <div class="card border-0 shadow-sm mb-4">
       <div class="card-body">
-        <h5 class="fw-bold mb-3">Skills</h5>
+        <h5 class="fw-bold mb-3">
+          <i class="bi bi-tools text-success me-2"></i>
+          Skills
+        </h5>
         {% for skill in student.skills.all %}
-          <span class="badge bg-light text-dark border me-1 mb-1 p-2">
+          <span class="badge bg-light text-dark border me-1 mb-2 p-2">
             {{ skill.skill_name }}
-            <small class="text-muted">({{ skill.get_proficiency_display }})</small>
+            <small class="text-muted">
+              ({{ skill.get_proficiency_display }})
+            </small>
           </span>
         {% empty %}
-          <p class="text-muted">No skills added.</p>
+          <p class="text-muted mb-0">No skills added.</p>
         {% endfor %}
       </div>
     </div>
@@ -93,11 +211,19 @@
     <!-- Academic Records -->
     <div class="card border-0 shadow-sm">
       <div class="card-body">
-        <h5 class="fw-bold mb-3">Academic Records</h5>
+        <h5 class="fw-bold mb-3">
+          <i class="bi bi-journal-text text-warning me-2"></i>
+          Academic Records
+        </h5>
         <div class="table-responsive">
-          <table class="table table-sm">
+          <table class="table table-sm table-hover mb-0">
             <thead class="table-light">
-              <tr><th>Exam</th><th>Institution</th><th>Year</th><th>Score</th></tr>
+              <tr>
+                <th>Exam</th>
+                <th>Institution</th>
+                <th>Year</th>
+                <th>Score</th>
+              </tr>
             </thead>
             <tbody>
               {% for rec in student.academic_records.all %}
@@ -108,13 +234,19 @@
                 <td>{{ rec.percentage_cgpa }}</td>
               </tr>
               {% empty %}
-              <tr><td colspan="4" class="text-muted">No records.</td></tr>
+              <tr>
+                <td colspan="4" class="text-muted text-center py-3">
+                  No records added.
+                </td>
+              </tr>
               {% endfor %}
             </tbody>
           </table>
         </div>
       </div>
     </div>
+
   </div>
 </div>
+
 {% endblock %}

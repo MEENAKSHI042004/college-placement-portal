@@ -22,6 +22,15 @@ urlpatterns = [
          views.UpdatePlacementStatusView.as_view(),
          name='update_placement_status'),
 
+    # ── Admin: Resume Viewer ───────────────────────
+    path('<int:pk>/resume/',
+         views.ResumeViewerView.as_view(),
+         name='resume_viewer'),
+
+    path('<int:pk>/resume/download/',
+         views.ResumeDownloadView.as_view(),
+         name='resume_download'),
+
     # ── Admin: Bulk Upload ─────────────────────────
     path('bulk-upload/',
          views.BulkUploadView.as_view(),
@@ -43,6 +52,10 @@ urlpatterns = [
     path('profile/edit/',
          views.UpdateProfileView.as_view(),
          name='update_profile'),
+
+    path('profile/resume/',
+         views.StudentResumeViewerView.as_view(),
+         name='my_resume'),
 
     path('profile/academic/add/',
          views.AddAcademicRecordView.as_view(),
