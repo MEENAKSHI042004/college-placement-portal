@@ -1,28 +1,5 @@
-[phases.setup]
-nixPkgs = ["python310"]
-
-[phases.install]
-cmds = ["pip install -r requirements.txt"]
-
-[phases.build]
-cmds = ["python manage.py collectstatic --noinput"]
-
-[start]
-cmd = "python manage.py migrate && gunicorn placement_portal.wsgi --bind 0.0.0.0:$PORT --log-file -"
-```
-
----
-
-Also make sure your project root has this structure:
-```
-placement_portal/          ← ROOT (this is on GitHub)
-├── manage.py              ← must be here
-├── requirements.txt       ← must be here
-├── Procfile               ← must be here
-├── runtime.txt            ← must be here
-├── nixpacks.toml          ← ADD THIS
-├── .gitignore
-└── placement_portal/
-    ├── settings.py
-    ├── urls.py
-    └── wsgi.py
+echo [phases.setup]>nixpacks.toml
+echo nixPkgs = ["python310"]>>nixpacks.toml
+echo.>>nixpacks.toml
+echo [start]>>nixpacks.toml
+echo cmd = "python manage.py migrate && gunicorn placement_portal.wsgi --bind 0.0.0.0:$PORT --log-file -">>nixpacks.toml
