@@ -1,5 +1,20 @@
-echo [phases.setup]>nixpacks.toml
-echo nixPkgs = ["python310"]>>nixpacks.toml
-echo.>>nixpacks.toml
-echo [start]>>nixpacks.toml
-echo cmd = "python manage.py migrate && gunicorn placement_portal.wsgi --bind 0.0.0.0:$PORT --log-file -">>nixpacks.toml
+[phases.setup]
+nixPkgs = ["python310"]
+
+[phases.install]
+cmds = ["pip install -r requirements.txt"]
+
+[phases.build]
+cmds = ["python manage.py collectstatic --noinput"]
+
+[start]
+cmd = "python manage.py migrate && gunicorn placement_portal.wsgi --bind 0.0.0.0:$PORT --log-file -"
+```
+
+---
+
+# 📄 Fix `Procfile`
+
+Open `E:\Django_ptojects\placement_portal\Procfile` in VS Code → **Select All → Delete → Paste → Save**
+```
+web: gunicorn placement_portal.wsgi --bind 0.0.0.0:$PORT --log-file -

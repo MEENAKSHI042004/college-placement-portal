@@ -1,8 +1,8 @@
-echo django>requirements.txt
-echo djangorestframework>>requirements.txt
-echo openpyxl>>requirements.txt
-echo Pillow>>requirements.txt
-echo whitenoise>>requirements.txt
-echo gunicorn>>requirements.txt
-echo dj-database-url>>requirements.txt
-echo psycopg2-binary>>requirements.txt
+django
+djangorestframework
+openpyxl
+Pillow
+whitenoise
+gunicorn
+dj-database-url
+psycopg2-binary
