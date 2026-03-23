@@ -99,18 +99,13 @@ class AdminCreateStudentView(AdminRequiredMixin, View):
             profile.save()
 
             # Send welcome email
-            try:
-                from applications.emails import send_welcome_email
-                send_welcome_email(user, password)
-            except Exception:
-                pass
-
-            messages.success(
-                request,
-                f'Student {full_name} created. Welcome email sent to {email}.'
-            )
-            return redirect('students:student_list')
-        return render(request, self.template_name, {'form': form})
+try:
+    from applications.emails import send_welcome_email
+    from django.template.loader import render_to_string
+    send_welcome_email(user, password)
+except Exception as e:
+    print(f"[EMAIL SKIPPED] {e}")
+    pass  # never crash student creation due to email
 
 
 class UpdatePlacementStatusView(AdminRequiredMixin, View):

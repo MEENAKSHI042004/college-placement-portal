@@ -7,11 +7,9 @@ class StudentProfile(models.Model):
     BRANCH_CHOICES = [
         ('CSE',   'Computer Science & Engineering'),
         ('ECE',   'Electronics & Communication'),
-        ('EEE',   'Electrical & Electronics'),
+        ('EEE',   'Cybersecurity '),
         ('MECH',  'Mechanical Engineering'),
-        ('CIVIL', 'Civil Engineering'),
-        ('IT',    'Information Technology'),
-        ('AIDS',  'AI & Data Science'),
+        ('DS',  'Data Science'),
         ('AIML',  'AI & Machine Learning'),
     ]
 

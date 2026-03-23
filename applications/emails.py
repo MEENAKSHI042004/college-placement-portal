@@ -100,7 +100,7 @@ def send_welcome_email(user, password):
         'student_name': user.full_name,
         'email':        user.email,
         'password':     password,
-        'login_url':    'http://127.0.0.1:8000/accounts/login/',
+        'login_url':    'https://college-placement-portal-3lem.onrender.com/accounts/login/',
     }
     return send_html_email(
         subject        = '🎓 Welcome to Placement Portal — Your Account Details',
